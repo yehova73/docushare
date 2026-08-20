@@ -1,5 +1,6 @@
 // app/api/drive/callback/route.ts
 import { getUserFromSession } from "@/actions/account/account";
+import { markQuickStartActionComplete } from "@/actions/quick-start/mark-quick-start-action-complete";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -76,6 +77,8 @@ export async function GET(req: NextRequest) {
       userPicture: googleUserInfo.picture ?? null,
     },
   });
+
+  markQuickStartActionComplete(user.id, "connectedGoogleDrive");
 
   return NextResponse.redirect(
     new URL("/app/settings?drive=connected", req.url),

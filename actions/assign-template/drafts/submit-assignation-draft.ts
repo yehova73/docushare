@@ -8,6 +8,7 @@ import {
   TemplateClientAssignation,
 } from "@/lib/generated/prisma/client";
 import { getUserFromSession } from "../../account/account";
+import { markQuickStartActionComplete } from "../../quick-start/mark-quick-start-action-complete";
 import { assignTemplateToClientAction } from "../assign-template-to-client";
 
 export type SubmitAssignationDraftInput = {
@@ -129,6 +130,10 @@ export const submitAssignationDraftAction = async (
         },
       },
     });
+
+    if (user?.id) {
+      markQuickStartActionComplete(user.id, "sentFirstRequest");
+    }
 
     return {
       status: "ok",

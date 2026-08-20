@@ -3,6 +3,7 @@
 import { ServerActionResponse } from "@/hooks/use-server-action";
 import { prisma } from "@/lib/prisma";
 import { getUserFromSession } from "../account/account";
+import { markQuickStartActionComplete } from "../quick-start/mark-quick-start-action-complete";
 import { Template } from "@/lib/generated/prisma/client";
 
 export const createTemplateAction = async (data: {
@@ -32,6 +33,8 @@ export const createTemplateAction = async (data: {
         userId: user.id,
       },
     });
+
+    markQuickStartActionComplete(user.id, "createdFirstTemplate");
 
     return {
       status: "ok",

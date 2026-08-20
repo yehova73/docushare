@@ -63,7 +63,7 @@ const DashboardPage: React.FC = async () => {
           </Card>
         </div>
         <div className="space-y-6">
-          <QuickStart />
+          <QuickStart userId={user?.id ?? ""} />
           <Card>
             <CardHeader className="flex items-center justify-between">
               <CardTitle>Recent Activity</CardTitle>

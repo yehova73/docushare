@@ -138,6 +138,7 @@ export const handleNewUserFields = async (userId: string) => {
         },
       },
       userSetupChecklist: {},
+      userQuickStartActions: {},
       featureAccess: {
         create: {
           ...FeatureAccessConfig[SubscriptionType.FREE],

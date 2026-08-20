@@ -7,6 +7,7 @@ import {
   ServerActionResponse,
   ServerActionMessageDetail,
 } from "@/hooks/use-server-action";
+import { markQuickStartActionComplete } from "../quick-start/mark-quick-start-action-complete";
 import { TemplateGetPayload } from "@/lib/generated/prisma/models";
 
 type EditableTemplate = TemplateGetPayload<{
@@ -128,6 +129,8 @@ export async function saveTemplateWithSectionsAction(
         },
       },
     });
+
+    markQuickStartActionComplete(session.user.id, "createdFirstTemplate");
 
     return {
       status: "ok",

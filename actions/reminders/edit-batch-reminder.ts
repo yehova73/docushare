@@ -8,6 +8,7 @@ import {
   ReminderType,
 } from "@/lib/generated/prisma/client";
 import { getUserFromSession } from "../account/account";
+import { markQuickStartActionComplete } from "../quick-start/mark-quick-start-action-complete";
 import { cloneGlobalRemindersToBatchAction } from "./clone-global-reminders-to-batch";
 
 export interface EditBatchReminderInput {
@@ -133,6 +134,10 @@ export async function editBatchReminderAction(
         everyDays: input.everyDays || null,
       },
     });
+
+    if (user?.id) {
+      markQuickStartActionComplete(user.id, "createdDocumentRequest");
+    }
 
     return {
       status: "ok",

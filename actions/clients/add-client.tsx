@@ -3,6 +3,7 @@
 import { ServerActionResponse } from "@/hooks/use-server-action";
 import { Client } from "@/lib/generated/prisma/browser";
 import { getUserFromSession } from "../account/account";
+import { markQuickStartActionComplete } from "../quick-start/mark-quick-start-action-complete";
 import { prisma } from "@/lib/prisma";
 
 export const addClientAction = async (data: {
@@ -23,6 +24,11 @@ export const addClientAction = async (data: {
         userId: user?.id || "",
       },
     });
+
+    if (user?.id) {
+      markQuickStartActionComplete(user.id, "addedFirstClient");
+    }
+
     return {
       status: "ok",
       data: newClient,

@@ -47,6 +47,7 @@ model User {
   changeEmailTokens          ChangeEmailToken[]
   feedbacks                  Feedback[]
   userSetupChecklist         UserSetupChecklist?
+  userQuickStartActions      UserQuickStartActions?
   templates                  Template[]
   clients                    Client[]
   googleDriveAccount         GoogleDriveAccount?
@@ -82,6 +83,21 @@ model UserSetupChecklist {
   addedAnotherLocation Boolean @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserQuickStartActions {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdFirstTemplate   Boolean @default(false)
+  addedFirstClient       Boolean @default(false)
+  connectedGoogleDrive   Boolean @default(false)
+  createdDocumentRequest Boolean @default(false)
+  sentFirstRequest       Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ChangeEmailToken {
