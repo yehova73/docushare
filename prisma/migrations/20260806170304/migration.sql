@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Template" ADD COLUMN     "requiredFields" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "totalFields" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "totalSections" INTEGER NOT NULL DEFAULT 0;

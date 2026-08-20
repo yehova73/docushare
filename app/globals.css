@@ -1,0 +1,480 @@
+@import "tailwindcss" ;
+@plugin "@tailwindcss/typography";
+@import "shadcn/tailwind.css";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+
+/*
+ * DocFetch design system — calm, premium, near-white surfaces,
+ * ink-black CTAs, a single quiet blue accent.
+ */
+
+
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-success: var(--success);
+  --color-warn: var(--warn);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+
+:root {
+  --radius: 0.5rem;
+
+  /* =========================================================
+     FOUNDATION (Cohesive Cool Neutral - Hue 255)
+     ========================================================= */
+
+  --background: oklch(0.985 0.005 255);
+  --foreground: oklch(0.200 0.030 255);
+
+  --surface: oklch(0.965 0.008 255);
+  --surface-strong: oklch(0.935 0.012 255);
+
+  --card: oklch(1.000 0 0);
+  --card-foreground: oklch(0.200 0.030 255);
+
+  --popover: oklch(1.000 0 0);
+  --popover-foreground: oklch(0.200 0.030 255);
+
+  /* =========================================================
+     INK & TYPOGRAPHY
+     ========================================================= */
+
+  --ink: oklch(0.180 0.035 255);
+  --ink-foreground: oklch(0.990 0.002 255);
+
+  /* =========================================================
+     PRIMARY (Deep Indigo — High Priority Actions)
+     ========================================================= */
+
+  --primary: oklch(0.320 0.090 260);
+  --primary-foreground: oklch(0.990 0.002 255);
+
+  /* =========================================================
+     SECONDARY & MUTED
+     ========================================================= */
+
+  --secondary: oklch(0.945 0.012 255);
+  --secondary-foreground: oklch(0.280 0.040 255);
+
+  --muted: oklch(0.950 0.008 255);
+  --muted-foreground: oklch(0.500 0.025 255);
+
+  /* =========================================================
+     ACCENT & BRAND (Vibrant Teal — DocFetch Identity & Activity)
+     ========================================================= */
+
+  --accent: oklch(0.935 0.035 180);
+  --accent-foreground: oklch(0.260 0.080 180);
+
+  --brand: oklch(0.560 0.145 180);
+  --brand-soft: oklch(0.930 0.040 180);
+
+  /* =========================================================
+     SEMANTIC (Status & Reminder States)
+     ========================================================= */
+
+  --success: oklch(0.620 0.160 150); /* Complete / Signed */
+  --success-foreground: oklch(0.990 0.002 255);
+
+  --warn: oklch(0.720 0.140 75);    /* Overdue / Reminder Triggered */
+  --warn-foreground: oklch(0.200 0.040 75);
+
+  --destructive: oklch(0.580 0.200 25); /* Request Rejected / Cancelled */
+  --destructive-foreground: oklch(0.990 0.002 255);
+
+  /* =========================================================
+     BORDERS & FOCUS RINGS
+     ========================================================= */
+
+  --border: oklch(0.890 0.012 255);
+  --input: oklch(0.890 0.012 255);
+
+  --ring: oklch(0.560 0.145 180);
+
+  /* =========================================================
+     CHARTS
+     ========================================================= */
+
+  --chart-1: oklch(0.560 0.145 180);
+  --chart-2: oklch(0.320 0.090 260);
+  --chart-3: oklch(0.620 0.160 150);
+  --chart-4: oklch(0.720 0.140 75);
+  --chart-5: oklch(0.600 0.100 220);
+
+  /* =========================================================
+     SIDEBAR
+     ========================================================= */
+
+  --sidebar: oklch(0.970 0.008 255);
+  --sidebar-foreground: oklch(0.200 0.030 255);
+
+  --sidebar-primary: oklch(0.320 0.090 260);
+  --sidebar-primary-foreground: oklch(0.990 0.002 255);
+
+  --sidebar-accent: oklch(0.935 0.035 180);
+  --sidebar-accent-foreground: oklch(0.260 0.080 180);
+
+  --sidebar-border: oklch(0.890 0.012 255);
+  --sidebar-ring: oklch(0.560 0.145 180);
+
+  /* =========================================================
+     ELEVATION
+     ========================================================= */
+
+  --shadow-soft:
+    0 1px 2px oklch(0.200 0.030 255 / 0.04),
+    0 8px 24px -12px oklch(0.200 0.030 255 / 0.08);
+
+  --shadow-card:
+    0 1px 2px oklch(0.200 0.030 255 / 0.04),
+    0 10px 30px -16px oklch(0.200 0.030 255 / 0.10);
+
+  --shadow-float:
+    0 2px 5px oklch(0.200 0.030 255 / 0.06),
+    0 24px 50px -20px oklch(0.200 0.030 255 / 0.16);
+
+  /* =========================================================
+     ATMOSPHERE
+     ========================================================= */
+
+  --gradient-veil:
+    radial-gradient(
+      65% 50% at 50% -10%,
+      oklch(0.560 0.145 180 / 0.07) 0%,
+      transparent 70%
+    );
+
+  --gradient-line:
+    linear-gradient(
+      90deg,
+      transparent,
+      oklch(0.200 0.030 255 / 0.08) 20%,
+      oklch(0.200 0.030 255 / 0.08) 80%,
+      transparent
+    );
+}
+
+/* =============================================================
+   DARK MODE
+   ============================================================= */
+
+.dark {
+  /* =========================================================
+     FOUNDATION
+     ========================================================= */
+
+  --background: oklch(0.140 0.020 255);
+  --foreground: oklch(0.950 0.008 255);
+
+  --surface: oklch(0.180 0.022 255);
+  --surface-strong: oklch(0.220 0.026 255);
+
+  --card: oklch(0.170 0.022 255);
+  --card-foreground: oklch(0.950 0.008 255);
+
+  --popover: oklch(0.190 0.024 255);
+  --popover-foreground: oklch(0.950 0.008 255);
+
+  /* =========================================================
+     INK
+     ========================================================= */
+
+  --ink: oklch(0.950 0.008 255);
+  --ink-foreground: oklch(0.140 0.020 255);
+
+  /* =========================================================
+     PRIMARY (Bright Indigo CTA in Dark Mode)
+     ========================================================= */
+
+  --primary: oklch(0.580 0.160 260);
+  --primary-foreground: oklch(0.990 0.002 255);
+
+  /* =========================================================
+     SECONDARY & MUTED
+     ========================================================= */
+
+  --secondary: oklch(0.230 0.025 255);
+  --secondary-foreground: oklch(0.920 0.010 255);
+
+  --muted: oklch(0.220 0.022 255);
+  --muted-foreground: oklch(0.650 0.020 255);
+
+  /* =========================================================
+     ACCENT & BRAND
+     ========================================================= */
+
+  --accent: oklch(0.240 0.045 180);
+  --accent-foreground: oklch(0.850 0.080 180);
+
+  --brand: oklch(0.680 0.145 180);
+  --brand-soft: oklch(0.250 0.050 180);
+
+  /* =========================================================
+     SEMANTIC
+     ========================================================= */
+
+  --success: oklch(0.680 0.150 150);
+  --success-foreground: oklch(0.120 0.020 255);
+
+  --warn: oklch(0.780 0.130 75);
+  --warn-foreground: oklch(0.140 0.030 75);
+
+  --destructive: oklch(0.650 0.180 25);
+  --destructive-foreground: oklch(0.990 0.002 255);
+
+  /* =========================================================
+     BORDERS / INPUTS
+     ========================================================= */
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+
+  --ring: oklch(0.680 0.145 180);
+
+  /* =========================================================
+     CHARTS
+     ========================================================= */
+
+  --chart-1: oklch(0.680 0.145 180);
+  --chart-2: oklch(0.580 0.160 260);
+  --chart-3: oklch(0.680 0.150 150);
+  --chart-4: oklch(0.780 0.130 75);
+  --chart-5: oklch(0.680 0.080 220);
+
+  /* =========================================================
+     SIDEBAR
+     ========================================================= */
+
+  --sidebar: oklch(0.155 0.020 255);
+  --sidebar-foreground: oklch(0.950 0.008 255);
+
+  --sidebar-primary: oklch(0.580 0.160 260);
+  --sidebar-primary-foreground: oklch(0.990 0.002 255);
+
+  --sidebar-accent: oklch(0.240 0.045 180);
+  --sidebar-accent-foreground: oklch(0.850 0.080 180);
+
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.680 0.145 180);
+
+  /* =========================================================
+     ELEVATION & ATMOSPHERE
+     ========================================================= */
+
+  --shadow-soft:
+    0 1px 2px oklch(0 0 0 / 0.20),
+    0 8px 24px -12px oklch(0 0 0 / 0.35);
+
+  --shadow-card:
+    0 1px 2px oklch(0 0 0 / 0.20),
+    0 10px 30px -16px oklch(0 0 0 / 0.40);
+
+  --shadow-float:
+    0 2px 5px oklch(0 0 0 / 0.22),
+    0 24px 50px -20px oklch(0 0 0 / 0.50);
+
+  --gradient-veil:
+    radial-gradient(
+      65% 50% at 50% -10%,
+      oklch(0.680 0.145 180 / 0.08) 0%,
+      transparent 70%
+    );
+
+  --gradient-line:
+    linear-gradient(
+      90deg,
+      transparent,
+      oklch(1 0 0 / 0.10) 20%,
+      oklch(1 0 0 / 0.10) 80%,
+      transparent
+    );
+}
+
+
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  /* 1. Backdrop: Cover full screen with semi-transparent background */
+.picker-dialog-bg {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Standard dialog overlay */
+  z-index: 9998 !important;
+}
+
+/* 2. Dialog Modal: Center in viewport and round corners */
+.picker-dialog {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  
+  
+  /* Styling to match modern UI */
+  border-radius: 12px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(229, 231, 235, 1) !important; /* border-gray-200 */
+  overflow: hidden !important;
+  z-index: 9999 !important;
+}
+
+/* 3. Prevent page scroll jumping while modal is active */
+body:has(.picker-dialog) {
+  overflow: hidden !important;
+}
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "ss01";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.028em;
+    text-wrap: balance;
+  }
+}
+
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+@utility shadow-float {
+  box-shadow: var(--shadow-float);
+}
+
+@utility bg-veil {
+  background-image: var(--gradient-veil);
+}
+
+@utility rule-line {
+  background-image: var(--gradient-line);
+}
+
+@utility glass-panel {
+  background-color: color-mix(in oklab, var(--card) 72%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+}
+
+@utility section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+@utility grid-paper {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--border) 65%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--border) 65%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 64px 64px;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-rise {
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
