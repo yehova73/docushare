@@ -48,3 +48,21 @@ export type PortalSection = {
   name: string;
   items: PortalItem[];
 };
+
+export type PortalBranding = {
+  name: string | null;
+  logoUrl: string | null;
+  backgroundColor: string;
+  headerFooterColor: string;
+  primaryColor: string;
+  fieldBackgroundColor: string;
+  sectionCardBackgroundColor: string;
+  sectionTitleColor: string;
+  fieldTitleColor: string;
+  fieldSubtitleColor: string;
+  inputBackgroundColor: string;
+  uploadBackgroundColor: string;
+  borderRadius: number;
+  titleTemplate: string;
+  submittedMessage: string;
+};

@@ -20,6 +20,28 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { DriveFolderSelector } from "@/components/drive-folder-selector";
 import { Badge } from "@/components/ui/badge";
+import { BrandingSettings, BrandingSettingsData } from "./branding-settings";
+
+const DEFAULT_BRANDING: BrandingSettingsData = {
+  name: null,
+  logoUrl: null,
+  logoKey: null,
+  backgroundColor: "#0d1420",
+  headerFooterColor: "#0f172a",
+  primaryColor: "#6366f1",
+  fieldBackgroundColor: "#0a0f1c",
+  sectionCardBackgroundColor: "#0f172a",
+  sectionTitleColor: "#f8fafc",
+  fieldTitleColor: "#f1f5f9",
+  fieldSubtitleColor: "#94a3b8",
+  inputBackgroundColor: "#111a2b",
+  uploadBackgroundColor: "#0d1420",
+  borderRadius: 12,
+  titleTemplate:
+    "Hi {client name}, {user name} has requested {item count} items for {template name}.",
+  submittedMessage:
+    "Thank you! Your documents have been securely uploaded directly to {user name}'s storage. No further action is needed.",
+};
 
 export const SettingsView: React.FC<{
   email: string;
@@ -32,7 +54,8 @@ export const SettingsView: React.FC<{
     folderId?: string | null;
     folderName?: string | null;
   };
-}> = ({ email, hasPassword, drive }) => {
+  branding?: BrandingSettingsData;
+}> = ({ email, hasPassword, drive, branding }) => {
   const [closePrev, setClosePrev] = useState(true);
   const [freq, setFreq] = useState("15");
   const [prefix, setPrefix] = useState(false);
@@ -108,6 +131,14 @@ export const SettingsView: React.FC<{
           )}
           <Divider />
         </Panel>
+      </section>
+
+      <section className="mt-8">
+        <SectionTitle>Branding</SectionTitle>
+        <p className="text-xs text-muted-foreground mb-3">
+          Customize how your client portal looks and reads for your clients.
+        </p>
+        <BrandingSettings initial={branding ?? DEFAULT_BRANDING} />
       </section>
 
       <section className="mt-8">

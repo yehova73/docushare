@@ -8,16 +8,17 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { TemplateField } from "@/lib/generated/prisma/browser";
-import { TemplateFieldType } from "@/lib/generated/prisma/enums";
-import { TemplateClientAssignationGetPayload } from "@/lib/generated/prisma/models";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Clock } from "lucide-react";
 import { useState } from "react";
+import { useClientPortalContext } from "./context/client-portal-context";
+import {
+  formatDueDate,
+  formatPortalMessage,
+  isTextField,
+} from "./context/utils";
 import { FieldInput } from "./field-input";
 import { SuccessView } from "./success-view";
-import { useClientPortalContext } from "./context/client-portal-context";
-import { formatDueDate, isTextField } from "./context/utils";
 
 /**
  * Transform workflow template sections and fields into sections with items
@@ -32,6 +33,7 @@ export function ClientPortal() {
     expandedSections,
     setExpandedSections,
     sections,
+    branding,
   } = useClientPortalContext();
   const [submitted, setSubmitted] = useState(false);
 
@@ -40,6 +42,13 @@ export function ClientPortal() {
   const workflowName =
     workflow.name ?? workflow.template?.name ?? "your review";
   const dueDate = workflow.dueDate;
+
+  const title = formatPortalMessage(branding.titleTemplate, {
+    clientName,
+    userName: organizationName,
+    itemCount: allItems.length,
+    templateName: workflowName,
+  });
 
   // Calculate total items and completed items across all sections
 
@@ -69,9 +78,7 @@ export function ClientPortal() {
             >
               {/* Welcome */}
               <div className="flex flex-col gap-3">
-                <h1 className="text-xl font-semibold sm:text-2xl">
-                  {`Hi ${clientName}, ${organizationName} has requested ${allItems.length} item${allItems.length !== 1 ? "s" : ""} for ${workflowName}.`}
-                </h1>
+                <h1 className="text-xl font-semibold sm:text-2xl">{title}</h1>
                 {dueDate && (
                   <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-700 dark:text-amber-400">
                     <Clock className="size-4 shrink-0" />
@@ -88,7 +95,7 @@ export function ClientPortal() {
                   onValueChange={(values) =>
                     setExpandedSections(new Set(values))
                   }
-                  className="w-full"
+                  className="w-full space-y-2"
                 >
                   {sections.map((section) => {
                     const sectionCompletion = getSectionCompletion(section.id);
@@ -98,13 +105,22 @@ export function ClientPortal() {
                       <AccordionItem
                         key={section.id}
                         value={section.id}
-                        className="border-b"
+                        className="rounded-xl border"
+                        style={{
+                          backgroundColor: "var(--portal-section-bg)",
+                          borderColor: "rgba(255,255,255,0.08)",
+                        }}
                       >
                         <AccordionTrigger className="hover:no-underline hover:bg-background/50 focus:bg-background/50 focus:ring-0 cursor-pointer p-2 flex items-center">
                           <div className="flex flex-1 items-center gap-3 text-left mr-2">
                             <div className="flex flex-1 justify-between gap-2">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-foreground">
+                                <span
+                                  className="font-medium text-foreground"
+                                  style={{
+                                    color: "var(--portal-section-title)",
+                                  }}
+                                >
                                   {section.name}
                                 </span>
                                 {isComplete && (
@@ -146,7 +162,13 @@ export function ClientPortal() {
 
       {/* Sticky footer */}
       {!submitted && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/90 backdrop-blur-md">
+        <div
+          className="fixed inset-x-0 bottom-0 z-20 border-t backdrop-blur-md"
+          style={{
+            backgroundColor: branding.headerFooterColor,
+            borderColor: "rgba(255,255,255,0.08)",
+          }}
+        >
           <div className="mx-auto flex max-w-2xl items-center gap-4 px-4 pt-3 pb-5">
             <div className="flex flex-1 flex-col gap-1.5">
               <span className="text-xs font-medium text-muted-foreground tabular-nums">

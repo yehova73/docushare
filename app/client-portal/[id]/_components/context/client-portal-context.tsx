@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { ClientWorkflowPayload, PortalSection } from "./types";
+import { ClientWorkflowPayload, PortalBranding, PortalSection } from "./types";
 import { isTextField, transformWorkflowToSections } from "./utils";
 import { FieldCompletionValueGetPayload } from "@/lib/generated/prisma/internal/prismaNamespaceBrowser";
 
@@ -17,6 +17,7 @@ const ClientPortalContext = createContext<
       expandedSections: Set<string>;
       setExpandedSections: React.Dispatch<React.SetStateAction<Set<string>>>;
       workflow: ClientWorkflowPayload;
+      branding: PortalBranding;
 
       setText: (id: string, value: string) => void;
       isSectionComplete: (sectionId: string) => boolean;
@@ -35,9 +36,11 @@ const ClientPortalContext = createContext<
 export function ClientPortalProvider({
   children,
   workflow,
+  branding,
 }: {
   children: React.ReactNode;
   workflow: ClientWorkflowPayload;
+  branding: PortalBranding;
 }) {
   const [sections, setSections] = useState<PortalSection[]>(() =>
     transformWorkflowToSections(workflow),
@@ -110,6 +113,7 @@ export function ClientPortalProvider({
         expandedSections,
         setExpandedSections,
         workflow,
+        branding,
 
         allItems,
         isSectionComplete,

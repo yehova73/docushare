@@ -65,3 +65,49 @@ export const isTextField = (field: TemplateField): boolean =>
   field.type === TemplateFieldType.PHONE ||
   field.type === TemplateFieldType.URL ||
   field.type === TemplateFieldType.NUMBER;
+
+export const PORTAL_BRANDING_DEFAULTS = {
+  name: null,
+  logoUrl: null,
+  backgroundColor: "#0d1420",
+  headerFooterColor: "#0f172a",
+  primaryColor: "#6366f1",
+  fieldBackgroundColor: "#0a0f1c",
+  sectionCardBackgroundColor: "#0f172a",
+  sectionTitleColor: "#f8fafc",
+  fieldTitleColor: "#f1f5f9",
+  fieldSubtitleColor: "#94a3b8",
+  inputBackgroundColor: "#111a2b",
+  uploadBackgroundColor: "#0d1420",
+  borderRadius: 12,
+  titleTemplate:
+    "Hi {client name}, {user name} has requested {item count} items for {template name}.",
+  submittedMessage:
+    "Thank you! Your documents have been securely uploaded directly to {user name}'s storage. No further action is needed.",
+} as const;
+
+export function formatPortalMessage(
+  template: string,
+  values: {
+    clientName?: string;
+    userName?: string;
+    itemCount?: number | string;
+    templateName?: string;
+  },
+): string {
+  return template
+    .replace(/\{client ?name\}/gi, values.clientName ?? "")
+    .replace(/\{user ?name\}/gi, values.userName ?? "")
+    .replace(/\{item ?count\}/gi, String(values.itemCount ?? ""))
+    .replace(/\{template ?name\}/gi, values.templateName ?? "");
+}
+
+export function getContrastColor(hex: string): string {
+  const h = hex.replace("#", "");
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return "#ffffff";
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.6 ? "#0d1420" : "#ffffff";
+}

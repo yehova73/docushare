@@ -8,7 +8,7 @@ import { useServerAction } from "@/hooks/use-server-action";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Edit, Loader2, Minimize2, Save, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FieldInputVariants } from "./upload-cards/field-input-variants";
 import { useClientPortalContext } from "./context/client-portal-context";
 import { PortalItem } from "./context/types";
@@ -28,12 +28,16 @@ export function FieldInput({
   const [localValue, setLocalValue] = useState<string | null>(
     item.value ?? null,
   );
+  const [prevItemValue, setPrevItemValue] = useState(item.value);
+
+  // Keep the local draft in sync when the saved value changes
+  if (prevItemValue !== item.value) {
+    setPrevItemValue(item.value);
+    setLocalValue(item.value ?? null);
+  }
+
   const { call: saveValue, loading: isSaving } =
     useServerAction(saveFieldValueAction);
-
-  useEffect(() => {
-    setLocalValue(item.value ?? null);
-  }, [item.value]);
 
   const handleTextChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -68,19 +72,32 @@ export function FieldInput({
   const isModified = localValue !== item.value;
 
   return (
-    <Card className={cn("transition-colors", isDone && "ring-emerald-500/30")}>
+    <Card
+      className={cn("transition-colors", isDone && "ring-emerald-500/30")}
+      style={{ backgroundColor: "var(--portal-field-bg)" }}
+    >
       <CardContent className="flex flex-col gap-3 px-0">
         <div className="flex items-start justify-between gap-3 px-3">
           <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-foreground">{item.name}</span>
+              <span
+                className="font-medium text-foreground"
+                style={{ color: "var(--portal-field-title)" }}
+              >
+                {item.name}
+              </span>
               {item.required ? (
                 <Badge>Required</Badge>
               ) : (
                 <Badge variant="secondary">Optional</Badge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground">{item.description}</p>
+            <p
+              className="text-sm text-muted-foreground"
+              style={{ color: "var(--portal-field-subtitle)" }}
+            >
+              {item.description}
+            </p>
           </div>
           {isDone && (
             <div className="flex items-center gap-2">

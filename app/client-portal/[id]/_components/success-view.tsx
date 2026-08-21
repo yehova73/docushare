@@ -2,14 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { CheckCircle2, FileText, PartyPopper, ShieldCheck } from "lucide-react";
 import { useClientPortalContext } from "./context/client-portal-context";
+import { formatPortalMessage } from "./context/utils";
 
 export function SuccessView() {
-  const { sections, workflow } = useClientPortalContext();
+  const { sections, workflow, branding } = useClientPortalContext();
   // Flatten and filter items that are done
   const allItems = sections.flatMap((s) => s.items);
   const uploaded = allItems.filter((i) => i.status === "done");
   const clientName = workflow.client?.name ?? "Valued Client";
   const organizationName = workflow.template?.user?.name ?? "Organization";
+
+  const submittedText = formatPortalMessage(branding.submittedMessage, {
+    clientName,
+    userName: organizationName,
+  });
 
   return (
     <motion.div
@@ -31,8 +37,7 @@ export function SuccessView() {
           Thank you, {clientName}!
         </h1>
         <p className="max-w-sm text-pretty text-muted-foreground">
-          Your documents have been securely uploaded directly to{" "}
-          {organizationName}&apos;s storage. No further action is needed.
+          {submittedText}
         </p>
       </div>
 

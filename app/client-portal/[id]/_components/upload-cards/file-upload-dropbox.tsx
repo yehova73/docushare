@@ -134,6 +134,9 @@ export const FileUploadDropbox: React.FC<{
             ? "border-primary bg-primary/5"
             : "border-border bg-muted/30",
         )}
+        style={{
+          backgroundColor: dragging ? undefined : "var(--portal-upload-bg)",
+        }}
       >
         <UploadCloud className="size-6 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">

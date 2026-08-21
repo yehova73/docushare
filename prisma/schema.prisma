@@ -54,6 +54,7 @@ model User {
   reminders                  Reminder[]
   activityLogs               ActivityLog[]
   templateAssignationBatches TemplateAssignationBatch[]
+  branding                   UserBranding?
 }
 
 model GoogleDriveAccount {
@@ -499,4 +500,42 @@ model TemplateAssignationBatchClient {
 enum TemplateAssignationBatchStatus {
   DRAFT
   SUBMITTED
+}
+
+model UserBranding {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  // Portal identity
+  name    String?
+  logoUrl String?
+  logoKey String?
+
+  // Colors
+  backgroundColor            String @default("#0d1420")
+  headerFooterColor          String @default("#0f172a")
+  primaryColor               String @default("#6366f1")
+  fieldBackgroundColor       String @default("#0a0f1c")
+  sectionCardBackgroundColor String @default("#0f172a")
+
+  // Text colors
+  sectionTitleColor  String @default("#f8fafc")
+  fieldTitleColor    String @default("#f1f5f9")
+  fieldSubtitleColor String @default("#94a3b8")
+
+  // Input colors
+  inputBackgroundColor  String @default("#111a2b")
+  uploadBackgroundColor String @default("#0d1420")
+
+  // Layout
+  borderRadius Int @default(12)
+
+  // Copy
+  titleTemplate    String @default("Hi {client name}, {user name} has requested {item count} items for {template name}.")
+  submittedMessage String @default("Thank you! Your documents have been securely uploaded directly to {user name}'s storage. No further action is needed.")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

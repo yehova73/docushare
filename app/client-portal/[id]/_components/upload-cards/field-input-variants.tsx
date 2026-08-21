@@ -23,6 +23,7 @@ export const FieldInputVariants: React.FC<{
           placeholder={item.placeholder ?? "Enter text..."}
           className="pl-8"
           type="text"
+          style={{ backgroundColor: "var(--portal-input-bg)" }}
         />
       </div>
     );
@@ -38,6 +39,7 @@ export const FieldInputVariants: React.FC<{
           placeholder={item.placeholder ?? "Enter text..."}
           className="pl-8"
           type="email"
+          style={{ backgroundColor: "var(--portal-input-bg)" }}
         />
       </div>
     );
@@ -53,6 +55,7 @@ export const FieldInputVariants: React.FC<{
           placeholder={item.placeholder ?? "Enter text..."}
           className="pl-8"
           type="text"
+          style={{ backgroundColor: "var(--portal-input-bg)" }}
         />
       </div>
     );
@@ -68,6 +71,7 @@ export const FieldInputVariants: React.FC<{
           placeholder={item.placeholder ?? "Enter text..."}
           className="pl-8"
           type="text"
+          style={{ backgroundColor: "var(--portal-input-bg)" }}
         />
       </div>
     );
@@ -83,6 +87,7 @@ export const FieldInputVariants: React.FC<{
           placeholder={item.placeholder ?? "Enter text..."}
           className="pl-8"
           type="number"
+          style={{ backgroundColor: "var(--portal-input-bg)" }}
         />
       </div>
     );
@@ -95,6 +100,7 @@ export const FieldInputVariants: React.FC<{
           value={localValue ?? ""}
           onChange={handleTextChange}
           placeholder={item.placeholder ?? "Enter text..."}
+          style={{ backgroundColor: "var(--portal-input-bg)" }}
         />
       </div>
     );
