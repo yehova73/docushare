@@ -5,28 +5,38 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 import {
-  AlarmClock,
-  CheckCircle,
-  FileCheckCorner,
+  ChevronRight,
+  Clock,
+  FileCheck,
+  FileEdit,
+  FileText,
+  FolderKanban,
+  Globe2,
+  Inbox,
   LayoutDashboard,
   LogOut,
   MessageCircleQuestionMark,
   Moon,
   Settings,
   Sun,
-  Users2,
+  Users,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "../logo";
 import { useFeedbackModal } from "../modals/feedback-modal/use-feedback-modal";
@@ -39,6 +49,67 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../ui/collapsible";
+
+const data = {
+  navMain: [
+    {
+      title: "Overview",
+      url: "/app",
+      items: [],
+      icon: <LayoutDashboard />,
+    },
+    {
+      title: "Clients",
+      url: "/app/clients",
+      items: [],
+      icon: <Users />,
+    },
+    {
+      title: "Requests",
+      url: "#",
+      icon: <FileCheck />,
+      items: [
+        {
+          title: "Open Requests",
+          url: "/app/requests",
+          icon: <Inbox />,
+        },
+        {
+          title: "Draft Requests",
+          url: "/app/requests/drafts",
+          icon: <FileEdit />,
+        },
+      ],
+    },
+    {
+      title: "Templates",
+      url: "#",
+      icon: <FileText />,
+      items: [
+        {
+          title: "Your Templates",
+          url: "/app/templates",
+          icon: <FolderKanban />,
+        },
+        {
+          title: "Public Templates",
+          url: "/app/templates/public",
+          icon: <Globe2 />,
+        },
+      ],
+    },
+    {
+      title: "Automated Reminders",
+      url: "/app/reminders",
+      icon: <Clock />,
+    },
+  ],
+};
 
 export const AppSidebar: React.FC<{
   subscription: {
@@ -58,85 +129,85 @@ export const AppSidebar: React.FC<{
 
   return (
     <Sidebar id="onborda-sidebar" collapsible="icon">
+      <SidebarHeader>
+        <Logo variant="white" />
+      </SidebarHeader>
       <SidebarContent>
-        <SidebarHeader>
-          <Logo variant="white" />
-        </SidebarHeader>
         <SidebarSeparator />
         <SidebarGroup>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={() => router.push("/app")}
-                className={cn(
-                  "cursor-pointer",
-                  path === "/app"
-                    ? "text-foreground bg-secondary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
-                )}
-              >
-                <LayoutDashboard />
-                <span>Overview</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={() => router.push("/app/requests")}
-                className={cn(
-                  "cursor-pointer",
-                  path.startsWith("/app/requests")
-                    ? "text-foreground bg-secondary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
-                )}
-              >
-                <CheckCircle />
-                <span>Requests</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={() => router.push("/app/templates")}
-                className={cn(
-                  "cursor-pointer",
-                  path.startsWith("/app/templates")
-                    ? "text-foreground bg-secondary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
-                )}
-              >
-                <FileCheckCorner />
-                <span>Templates</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={() => router.push("/app/clients")}
-                className={cn(
-                  "cursor-pointer",
-                  path.startsWith("/app/clients")
-                    ? "text-foreground bg-secondary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
-                )}
-              >
-                <Users2 />
-                <span>Clients</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={() => router.push("/app/reminders")}
-                className={cn(
-                  "cursor-pointer",
-                  path.startsWith("/app/reminders")
-                    ? "text-foreground bg-secondary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
-                )}
-              >
-                <AlarmClock />
-                <span>Automated Reminders</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {data.navMain.map(
+              (item) =>
+                item.items?.length ? (
+                  <Collapsible
+                    key={item.title}
+                    title={item.title}
+                    defaultOpen
+                    className="group/collapsible"
+                  >
+                    <SidebarGroupLabel
+                      asChild
+                      className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    >
+                      <CollapsibleTrigger
+                        asChild
+                        className="w-full cursor-pointer"
+                      >
+                        <SidebarMenuItem key={item.title}>
+                          {item.icon}
+                          <div className="ml-2">{item.title}</div>
+                          <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuItem>
+                      </CollapsibleTrigger>
+                    </SidebarGroupLabel>
+                    <CollapsibleContent>
+                      <SidebarMenuSub className={"pr-0 mr-0"}>
+                        {item.items?.map((item) => (
+                          <SidebarMenuSubItem key={item?.title}>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={path === item?.url}
+                            >
+                              <Link href={item!.url}>{item?.title}</Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link href={item.url} className="font-medium">
+                        {item.icon}
+                        {item.title}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ),
+              // <SidebarMenuItem key={item.title}>
+              //   <SidebarMenuButton asChild>
+              //     <Link href={item.url} className="font-medium">
+              //       {item.icon}
+              //       {item.title}
+              //     </Link>
+              //   </SidebarMenuButton>
+              //   {item.items?.length ? (
+              //     <SidebarMenuSub className={"pr-0 mr-0"}>
+              //       {item.items.map((item) => (
+              //         <SidebarMenuSubItem key={item?.title}>
+              //           <SidebarMenuSubButton
+              //             asChild
+              //             isActive={path === item?.url}
+              //           >
+              //             <Link href={item!.url}>{item?.title}</Link>
+              //           </SidebarMenuSubButton>
+              //         </SidebarMenuSubItem>
+              //       ))}
+              //     </SidebarMenuSub>
+              //   ) : null}
+              // </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarGroup>
 

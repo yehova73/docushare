@@ -36,7 +36,7 @@ export const getCompleteTemplateByIdAction = async (
     },
   });
 
-  if (!template || template.userId !== user?.id) {
+  if (!template || (template.userId && template.userId !== user?.id)) {
     return {
       status: "error",
       message: {

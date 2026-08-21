@@ -5,7 +5,7 @@ const NewAssignationPage: React.FC = () => {
   return (
     <div className="space-y-6 w-full max-w-7xl mx-auto">
       <DashboardPageHeader
-        title="New assignation"
+        title="New Request"
         description={
           "Build a checklist and send a secure upload link to your clients."
         }

@@ -1,28 +1,17 @@
 import { getUserFromSession } from "@/actions/account/account";
 import { isTextField } from "@/app/client-portal/[id]/_components/context/utils";
 import { DashboardPageHeader } from "@/components/dashboard-page-header";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatUI } from "@/components/ui/stats";
 import { prisma } from "@/lib/prisma";
 import { capitalize } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
-import { AlarmClock, Info, List, ListCheck, User } from "lucide-react";
+import { AlarmClock, Info, ListCheck, User } from "lucide-react";
 import { DownloadFileButton } from "./_components/download-file-button";
 import { DownloadArchiveButton } from "./_components/download-archive-button";
 import { ClientUpdatesCard } from "./_components/client-updates-card";
+import { RequestRemindersCard } from "./_components/request-reminders-card";
+import { RequestPageOptionsButton } from "./_components/options-button";
 
 const RequestPage: React.FC<{ params: Promise<{ id: string }> }> = async ({
   params,
@@ -67,6 +56,11 @@ const RequestPage: React.FC<{ params: Promise<{ id: string }> }> = async ({
         description={`Manage the responses of the request for the workflow "${assignment?.template.name || "Unnamed"}" assigned to ${assignment?.client.name || "Unknown client"}.`}
         actions={
           <div className="flex items-center gap-2">
+            <RequestPageOptionsButton
+              id={id}
+              clientName={assignment?.client.name || "Unknown client"}
+              clientFolderId={assignment?.clientFolderId || undefined}
+            />
             <DownloadArchiveButton
               fields={
                 assignment?.template.sections.flatMap(
@@ -181,24 +175,10 @@ const RequestPage: React.FC<{ params: Promise<{ id: string }> }> = async ({
             assignationId={assignment?.id || ""}
             userId={user.id}
           />
-          <Card className="h-min">
-            <CardHeader>
-              <CardTitle>Reminders</CardTitle>
-              <CardDescription>
-                Reminders history for this request
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Empty>
-                <EmptyHeader>
-                  <EmptyMedia variant={"icon"}>
-                    <List />
-                  </EmptyMedia>
-                  <EmptyTitle>No updates yet</EmptyTitle>
-                </EmptyHeader>
-              </Empty>
-            </CardContent>
-          </Card>
+          <RequestRemindersCard
+            assignationId={assignment?.id || ""}
+            userId={user.id}
+          />
         </div>
       </div>
     </div>

@@ -78,8 +78,6 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  markQuickStartActionComplete(user.id, "connectedGoogleDrive");
-
   return NextResponse.redirect(
     new URL("/app/settings?drive=connected", req.url),
   );

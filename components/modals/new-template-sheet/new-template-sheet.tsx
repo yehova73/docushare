@@ -18,14 +18,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -33,10 +25,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-import { useServerAction } from "@/hooks/use-server-action";
-import { useRouter } from "next/navigation";
-import { useNewTemplateSheet } from "./use-new-template-sheet";
 import {
   Sheet,
   SheetContent,
@@ -45,6 +33,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
+import { useServerAction } from "@/hooks/use-server-action";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useNewTemplateSheet } from "./use-new-template-sheet";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 // Schema definition
 const formSchema = z.object({
@@ -72,6 +67,7 @@ export function NewTemplateSheet() {
     useServerAction(createTemplateAction);
   const { call: updateTemplate, loading: updatingTemplate } =
     useServerAction(editTemplateAction);
+  const params = useSearchParams();
 
   const [categories, setCategories] =
     React.useState<string[]>(INITIAL_CATEGORIES);
@@ -174,13 +170,30 @@ export function NewTemplateSheet() {
       <SheetContent className="flex flex-col !max-w-lg w-full">
         <SheetHeader>
           <SheetTitle>
-            {editTemplate ? "Edit Template" : "Add New Item"}
+            {editTemplate ? "Edit Template" : "Add New Template"}
           </SheetTitle>
           <SheetDescription>
             {editTemplate
               ? "Update the template details"
               : "Fill out the basic details below. Customize the fields in the next step"}
           </SheetDescription>
+          {!editTemplate && (
+            <Alert className="mt-4 flex items-center">
+              <AlertCircle className="h-4 w-4 mb-1" />
+              <AlertDescription className="flex items-center justify-between flex-1">
+                <div className="flex-1">Want to get started faster?</div>
+                <Link href="/app/templates/public" passHref>
+                  <Button
+                    size="xs"
+                    className="ml-2"
+                    onClick={() => closeDialog()}
+                  >
+                    Browse Our Templates
+                  </Button>
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
         </SheetHeader>
 
         <form

@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useServerAction } from "@/hooks/use-server-action";
 import { ClientGetPayload } from "@/lib/generated/prisma/models";
+import { getInitials } from "@/lib/utils";
 import {
   Copy,
   Edit2,
@@ -46,9 +47,9 @@ import {
   UserPlus,
   UserX,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAssignWorkflowToClientSheet } from "@/components/modals/assign-workflow-to-client-sheet/use-assign-workflow-to-client-sheet";
 
 export const ClientsTable: React.FC<{
   initialClients: ClientGetPayload<{
@@ -59,8 +60,6 @@ export const ClientsTable: React.FC<{
     };
   }>[];
 }> = ({ initialClients }) => {
-  const { openSheet: openAssignWorkflowSheet } =
-    useAssignWorkflowToClientSheet();
   const { openDialog } = useAddClientSheet();
   const [clients, setClients] = useState<
     ClientGetPayload<{
@@ -95,12 +94,11 @@ export const ClientsTable: React.FC<{
         description="Manage your clients"
         actions={
           <div className="flex items-center gap-2">
-            <Button
-              onClick={() => openAssignWorkflowSheet()}
-              variant="secondary"
-            >
-              <Plus /> New Request
-            </Button>
+            <Link href={`/app/new-assignation`} passHref>
+              <Button variant="secondary">
+                <Plus /> New Request
+              </Button>
+            </Link>
             <Button
               onClick={() =>
                 openDialog({
@@ -176,10 +174,7 @@ export const ClientsTable: React.FC<{
                         <div className="flex items-center gap-3">
                           <Avatar size="sm">
                             <AvatarFallback className="bg-primary/10 text-[11px] font-medium text-primary">
-                              {c.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
+                              {getInitials(c.name)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col">
@@ -316,17 +311,14 @@ export const ClientsTable: React.FC<{
                       <TableCell className="text-right">
                         <Tooltip>
                           <TooltipTrigger>
-                            <Button
-                              variant="ghost"
-                              size="icon-sm"
-                              onClick={() =>
-                                openAssignWorkflowSheet({
-                                  initialClientId: c.id,
-                                })
-                              }
+                            <Link
+                              href={`/app/new-assignation?clientIds=${c.id}`}
+                              passHref
                             >
-                              <Plus />
-                            </Button>
+                              <Button variant="ghost" size="icon-sm">
+                                <Plus />
+                              </Button>
+                            </Link>
                           </TooltipTrigger>
                           <TooltipContent>
                             Create new documents request

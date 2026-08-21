@@ -95,8 +95,8 @@ export const ReminderCard: React.FC<{
           </div>
         </CardHeader>
         <CardContent className="-mt-2">
-          <div className="space-y-2">
-            <div className="text-sm ">
+          <div className="flex space-x-4">
+            <div className="text-sm w-1/4 space-y-1">
               <div className="font-semibold text-muted-foreground">
                 Subject:
               </div>
@@ -104,7 +104,7 @@ export const ReminderCard: React.FC<{
                 {reminder.subject}
               </div>
             </div>
-            <div className="text-sm space-y-1">
+            <div className="text-sm w-3/4 space-y-1">
               <div className="font-semibold text-muted-foreground">
                 Content:
               </div>

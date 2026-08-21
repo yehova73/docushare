@@ -10,7 +10,7 @@ export interface GetRequestsParams {
   limit?: number;
   search?: string;
   status?: AssignedTemplateStatus | "ALL";
-  clientId?: string;
+  clientIds?: string[];
   templateId?: string;
 }
 
@@ -33,7 +33,7 @@ export async function getRequests(
     limit = 10,
     search = "",
     status = "ALL",
-    clientId,
+    clientIds,
     templateId,
   } = params;
 
@@ -51,9 +51,11 @@ export async function getRequests(
     where.status = status;
   }
 
-  // Apply client ID filter
-  if (clientId) {
-    where.clientId = clientId;
+  // Apply client IDs filter
+  if (clientIds && clientIds.length > 0) {
+    where.clientId = {
+      in: clientIds,
+    };
   }
 
   // Apply template ID filter

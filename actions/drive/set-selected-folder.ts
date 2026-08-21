@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getUserFromSession } from "../account/account";
 import { ServerActionResponse } from "@/hooks/use-server-action";
+import { markQuickStartActionComplete } from "../quick-start/mark-quick-start-action-complete";
 
 export const setSelectedFolderAction = async (
   folderId: string,
@@ -33,6 +34,7 @@ export const setSelectedFolderAction = async (
     },
   });
 
+  markQuickStartActionComplete(user.id, "connectedGoogleDrive");
   return {
     status: "ok",
     message: {

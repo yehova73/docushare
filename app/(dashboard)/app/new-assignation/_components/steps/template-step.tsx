@@ -73,7 +73,7 @@ export function TemplateStep() {
   return (
     <div className="flex flex-col gap-2">
       <div className="space-y-2">
-        <Label>Start from template</Label>
+        <Label>Select template</Label>
         {templates.length === 0 ? (
           <div className="flex items-center justify-center rounded-lg border border-dashed py-8 text-sm text-muted-foreground">
             No templates available.

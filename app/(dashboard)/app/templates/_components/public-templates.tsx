@@ -10,9 +10,22 @@ import {
 } from "@/components/ui/empty";
 import { FileX } from "lucide-react";
 
-export const PublicTemplates = async () => {
+export const PublicTemplates = async ({
+  search,
+  category,
+}: {
+  search?: string;
+  category?: string;
+}) => {
   const publicTemplates = await prisma.template.findMany({
-    where: { userId: null, templateClientAssignation: null },
+    where: {
+      userId: null,
+      templateClientAssignation: null,
+      assignationBatches: { none: {} },
+      assignationParentTemplate: null,
+      ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+      ...(category ? { category } : {}),
+    },
     include: {
       sections: {
         include: {

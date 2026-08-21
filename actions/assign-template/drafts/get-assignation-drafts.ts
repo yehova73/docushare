@@ -32,17 +32,60 @@ export type AssignationDraftListItem = {
   }[];
 };
 
-export const getAssignationDraftsAction = async (): Promise<
-  ServerActionResponse<{ drafts: AssignationDraftListItem[] }>
-> => {
+export const getAssignationDraftsAction = async (
+  params: {
+    search?: string;
+    clientIds?: string[];
+  } = {},
+): Promise<ServerActionResponse<{ drafts: AssignationDraftListItem[] }>> => {
   try {
     const user = await getUserFromSession();
 
+    const { search = "", clientIds } = params;
+
+    const where: any = {
+      userId: user?.id,
+      status: "DRAFT",
+    };
+
+    // Search by template name or any of the draft's client names.
+    const searchConditions: any[] = [];
+    if (search) {
+      searchConditions.push({
+        template: {
+          name: { contains: search, mode: "insensitive" },
+        },
+      });
+      searchConditions.push({
+        clients: {
+          some: {
+            client: {
+              name: { contains: search, mode: "insensitive" },
+            },
+          },
+        },
+      });
+    }
+
+    // Filter by one or more selected clients.
+    const clientConditions: any[] = [];
+    if (clientIds && clientIds.length > 0) {
+      clientConditions.push({ clientId: { in: clientIds } });
+    }
+
+    if (searchConditions.length > 0 && clientConditions.length > 0) {
+      where.AND = [
+        { OR: searchConditions },
+        { clients: { some: { AND: clientConditions } } },
+      ];
+    } else if (searchConditions.length > 0) {
+      where.OR = searchConditions;
+    } else if (clientConditions.length > 0) {
+      where.clients = { some: { AND: clientConditions } };
+    }
+
     const drafts = await prisma.templateAssignationBatch.findMany({
-      where: {
-        userId: user?.id,
-        status: "DRAFT",
-      },
+      where,
       include: {
         template: {
           select: {

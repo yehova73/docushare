@@ -7,6 +7,7 @@ import {
   TemplateAssignationBatchClient,
 } from "@/lib/generated/prisma/client";
 import { getUserFromSession } from "../../account/account";
+import { markQuickStartActionComplete } from "@/actions/quick-start/mark-quick-start-action-complete";
 
 export type AssignationDraftClientInput = {
   clientId: string;
@@ -85,7 +86,7 @@ export const updateAssignationDraftAction = async (
         },
       },
     });
-
+    markQuickStartActionComplete(user!.id, "createdDocumentRequest");
     return {
       status: "ok",
       data: { draft },

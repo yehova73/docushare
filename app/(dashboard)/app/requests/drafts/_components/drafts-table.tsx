@@ -147,7 +147,10 @@ function ClientCell({ draft }: { draft: AssignationDraftListItem }) {
   );
 }
 
-export const DraftsTable = () => {
+export const DraftsTable: React.FC<{
+  search?: string;
+  clientIds?: string[];
+}> = ({ search = "", clientIds = [] }) => {
   const router = useRouter();
   const { call: deleteDraft, loading: deletingDraft } = useServerAction(
     deleteAssignationDraftAction,
@@ -159,7 +162,7 @@ export const DraftsTable = () => {
 
   useEffect(() => {
     let cancelled = false;
-    getAssignationDraftsAction().then((res) => {
+    getAssignationDraftsAction({ search, clientIds }).then((res) => {
       if (cancelled) return;
       if (res?.status === "ok" && res.data) {
         setDrafts(res.data.drafts);
@@ -169,7 +172,7 @@ export const DraftsTable = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [search, clientIds]);
 
   const handleDelete = async (draft: AssignationDraftListItem) => {
     const confirmation = requireConfirmation({

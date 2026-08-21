@@ -20,6 +20,7 @@ import {
   Edit2,
   Trash,
   Import,
+  MoreVertical,
 } from "lucide-react";
 import { getFieldIcon } from "../[id]/_components/utils";
 import { Button } from "@/components/ui/button";
@@ -34,9 +35,16 @@ import {
 } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { useNewTemplateSheet } from "@/components/modals/new-template-sheet/use-new-template-sheet";
+import { useTemplatePreviewDialog } from "@/components/modals/template-preview-dialog/use-template-preview-dialog";
 import { deleteTemplateAction } from "@/actions/templates/delete-template";
 import { requireConfirmation } from "@/components/modals/confirmation-modal/use-confirmation";
-import { useAssignWorkflowToClientSheet } from "@/components/modals/assign-workflow-to-client-sheet/use-assign-workflow-to-client-sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const TemplateCard: React.FC<{
   index: number;
@@ -58,11 +66,10 @@ export const TemplateCard: React.FC<{
 }> = ({ index: i, template: t, isPublicTemplate }) => {
   const [templateData, setTemplate] = useState(t);
   const { openDialog } = useNewTemplateSheet();
+  const { openDialog: openTemplatePreview } = useTemplatePreviewDialog();
   const { call: callDuplicateTemplate, loading: duplicating } = useServerAction(
     duplicateTemplateAction,
   );
-  const { openSheet: openAssignWorkflowSheet } =
-    useAssignWorkflowToClientSheet();
   const { call: callDeleteTemplate, loading: deleting } =
     useServerAction(deleteTemplateAction);
   const router = useRouter();
@@ -90,14 +97,62 @@ export const TemplateCard: React.FC<{
           <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <FileText className="size-4.5" />
           </span>
-          <Badge
-            variant={"secondary"}
-            // className={
-            //   categoryColor[t.category] ?? "bg-muted text-foreground"
-            // }
-          >
-            {templateData.category}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant={"secondary"}
+              // className={
+              //   categoryColor[t.category] ?? "bg-muted text-foreground"
+              // }
+            >
+              {templateData.category}
+            </Badge>
+            {!isPublicTemplate && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon-xs">
+                    <MoreVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-44" align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/app/templates/${templateData.id}`} passHref>
+                      <Pencil data-icon="inline-start" /> Edit template
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      openTemplatePreview({ templateId: templateData.id })
+                    }
+                  >
+                    <Eye data-icon="inline-start" /> Preview template
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Button
+                      variant="ghost"
+                      aria-label="Duplicate template"
+                      onClick={() =>
+                        callDuplicateTemplate(templateData.id).then((x) => {
+                          if (x?.id) {
+                            router.refresh();
+                          }
+                        })
+                      }
+                      disabled={duplicating}
+                    >
+                      <Copy /> Duplicate template
+                    </Button>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleDeleteTemplate}
+                    variant="destructive"
+                  >
+                    <Trash data-icon="inline-start" /> Delete template
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
         <CardTitle className="mt-2 flex items-center gap-2 group">
           {templateData.name}
@@ -153,6 +208,13 @@ export const TemplateCard: React.FC<{
       {isPublicTemplate && (
         <CardFooter className="gap-2 mt-auto">
           <Button
+            variant="secondary"
+            aria-label="Preview template"
+            onClick={() => openTemplatePreview({ templateId: templateData.id })}
+          >
+            <Eye /> Preview Template
+          </Button>
+          <Button
             aria-label="Duplicate template"
             className="flex-1"
             onClick={() =>
@@ -166,77 +228,27 @@ export const TemplateCard: React.FC<{
           >
             <Import /> Import template
           </Button>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" aria-label="Preview template">
-                <Eye />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Preview template</TooltipContent>
-          </Tooltip>
         </CardFooter>
       )}
       {!isPublicTemplate && (
-        <CardFooter className="mt-auto">
+        <CardFooter className="mt-auto gap-2">
           <Button
-            className="flex-1"
-            onClick={() =>
-              openAssignWorkflowSheet({ initialTemplateId: templateData.id })
-            }
+            variant="secondary"
+            aria-label="Preview template"
+            onClick={() => openTemplatePreview({ templateId: templateData.id })}
           >
-            <UserPlus />
-            Assign to Client
+            <Eye /> Preview Template
           </Button>
-
-          <Link href={`/app/templates/${templateData.id}`} passHref>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" aria-label="Edit template">
-                  <Pencil data-icon="inline-start" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit template</TooltipContent>
-            </Tooltip>
+          <Link
+            href={`/app/new-assignation?templateId=${templateData.id}`}
+            passHref
+            className="flex-1"
+          >
+            <Button className="w-full">
+              <UserPlus />
+              Assign to Client
+            </Button>
           </Link>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" aria-label="Preview template">
-                <Eye />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Preview template</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                aria-label="Duplicate template"
-                onClick={() =>
-                  callDuplicateTemplate(templateData.id).then((x) => {
-                    if (x?.id) {
-                      router.refresh();
-                    }
-                  })
-                }
-                disabled={duplicating}
-              >
-                <Copy />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Duplicate template</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="destructive"
-                aria-label="Delete template"
-                onClick={handleDeleteTemplate}
-              >
-                <Trash data-icon="inline-start" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Delete template</TooltipContent>
-          </Tooltip>
         </CardFooter>
       )}
     </Card>

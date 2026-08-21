@@ -1,19 +1,16 @@
 "use client";
 
-import { Template } from "@/lib/generated/prisma/browser";
 import * as React from "react";
 
 type State = {
   open: boolean;
-  initialClientId?: string;
-  initialTemplateId?: string;
+  templateId?: string;
 };
 
 type Action =
   | {
       type: "SHOW_DIALOG";
-      initialClientId?: string;
-      initialTemplateId?: string;
+      templateId: string;
     }
   | { type: "CLOSE_DIALOG" };
 
@@ -37,15 +34,14 @@ function reducer(state: State, action: Action): State {
     case actionTypes.SHOW_DIALOG:
       return {
         open: true,
-        initialClientId: action.initialClientId,
-        initialTemplateId: action.initialTemplateId,
+        templateId: action.templateId,
       };
     case actionTypes.CLOSE_DIALOG:
-      return { ...state, open: false };
+      return { ...state, open: false, templateId: undefined };
   }
 }
 
-export function useAssignWorkflowToClientSheet() {
+export function useTemplatePreviewDialog() {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
@@ -56,17 +52,12 @@ export function useAssignWorkflowToClientSheet() {
     };
   }, []);
 
-  const openSheet = (params?: {
-    initialClientId?: string;
-    initialTemplateId?: string;
-  }) =>
-    dispatch({
-      type: actionTypes.SHOW_DIALOG,
-      initialClientId: params?.initialClientId,
-      initialTemplateId: params?.initialTemplateId,
-    });
+  const openDialog = (params: { templateId: string }) => {
+    const { templateId } = params;
+    dispatch({ type: actionTypes.SHOW_DIALOG, templateId });
+  };
 
   const closeDialog = () => dispatch({ type: actionTypes.CLOSE_DIALOG });
 
-  return { ...state, openSheet, closeDialog };
+  return { ...state, openDialog, closeDialog };
 }

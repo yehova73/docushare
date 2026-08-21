@@ -46,7 +46,7 @@ export async function cloneGlobalRemindersToBatchAction(
     }
 
     const globalReminders = await prisma.reminder.findMany({
-      where: { userId: user?.id, batchId: null },
+      where: { userId: user?.id, batchId: null, assignmentId: null },
       orderBy: { createdAt: "asc" },
     });
 

@@ -52,7 +52,7 @@ export async function getBatchRemindersAction(batchId: string): Promise<
 
     // Fall back to global reminders (those not tied to any batch).
     const globalReminders = await prisma.reminder.findMany({
-      where: { userId: user?.id, batchId: null },
+      where: { userId: user?.id, batchId: null, assignmentId: null },
       orderBy: { createdAt: "asc" },
     });
 

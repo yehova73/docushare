@@ -1,9 +1,16 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { subDays } from "date-fns";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileX } from "lucide-react";
 import Link from "next/link";
 import { match } from "ts-pattern";
 
@@ -32,6 +39,22 @@ export const RequestsNeedingAttention: React.FC<{ userId: string }> = async ({
       },
     });
 
+  if (!requestsNeedingAttention || requestsNeedingAttention.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant={"icon"}>
+            <FileX />
+          </EmptyMedia>
+          <EmptyTitle>No requests needing attention</EmptyTitle>
+          <EmptyDescription>
+            You have no requests that are overdue, recently completed, or in
+            draft status.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
   return (
     <div className="space-y-2">
       {requestsNeedingAttention.map((request) => (

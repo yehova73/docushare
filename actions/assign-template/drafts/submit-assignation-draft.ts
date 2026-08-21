@@ -90,6 +90,22 @@ export const submitAssignationDraftAction = async (
 
     const assignations: SubmittedAssignation[] = [];
 
+    // Resolve the reminders to attach to each created assignation: the batch's
+    // own reminders when present, otherwise fall back to the user's global
+    // reminders (matches the preview shown in the draft's reminders step).
+    const batchReminders = await prisma.reminder.findMany({
+      where: { batchId: draft.id },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const effectiveReminders =
+      batchReminders.length > 0
+        ? batchReminders
+        : await prisma.reminder.findMany({
+            where: { userId: user.id, batchId: null },
+            orderBy: { createdAt: "asc" },
+          });
+
     // Create one 1:1 TemplateClientAssignation per client by reusing the
     // existing single-client assignation flow (duplicates the template per client).
     for (const draftClient of draft.clients) {
@@ -113,12 +129,32 @@ export const submitAssignationDraftAction = async (
         };
       }
 
+      const createdTemplate = result.data.template;
+
       assignations.push({
         clientId: draftClient.clientId,
         clientName: nameById.get(draftClient.clientId) ?? draftClient.clientId,
-        template: result.data.template,
+        template: createdTemplate,
         url: result.data.url,
       });
+
+      // Clone the draft reminders onto the created assignation so the request
+      // detail page can render its sent/future reminder history.
+      if (effectiveReminders.length > 0) {
+        await prisma.reminder.createMany({
+          data: effectiveReminders.map((reminder) => ({
+            userId: user.id,
+            assignmentId: createdTemplate.id,
+            title: reminder.title,
+            scheduleType: reminder.scheduleType,
+            everyDays: reminder.everyDays,
+            afterDays: reminder.afterDays,
+            reminderType: reminder.reminderType,
+            subject: reminder.subject,
+            content: reminder.content,
+          })),
+        });
+      }
     }
 
     const updatedDraft = await prisma.templateAssignationBatch.update({

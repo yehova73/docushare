@@ -26,7 +26,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/request-status-badge";
 import {
   Select,
@@ -58,19 +57,22 @@ import {
   Send,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { RequestProgressCell } from "./request-progress-cell";
 
 type RequestType = TemplateClientAssignationGetPayload<{
   include: { client: true; template: true };
 }>;
 
-export const RequestsTable = ({ isOverview }: { isOverview?: boolean }) => {
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [status, setStatus] = useState<AssignedTemplateStatus | "ALL">("ALL");
-  const [clientId, setClientId] = useState<string | undefined>();
+export const RequestsTable: React.FC<{
+  isOverview?: boolean;
+  search?: string;
+  clientIds?: string[];
+  status?: AssignedTemplateStatus | "ALL";
+}> = ({ isOverview, search = "", clientIds = [], status = "ALL" }) => {
   const [templateId, setTemplateId] = useState<string | undefined>();
   const [data, setData] = useState<RequestType[]>([]);
   const [total, setTotal] = useState(0);
@@ -81,26 +83,18 @@ export const RequestsTable = ({ isOverview }: { isOverview?: boolean }) => {
 
   const router = useRouter();
 
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-      setPage(1); // Reset to first page on search
-    }, 300);
+  const filterSignature = `${search}||${status}||${clientIds.join(",")}`;
+  const appliedFiltersRef = useRef(filterSignature);
 
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  // Fetch data whenever filters or pagination changes
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await getRequests({
         page,
         limit,
-        search: debouncedQuery,
+        search,
         status,
-        clientId,
+        clientIds,
         templateId,
       });
       setData(response.data);
@@ -113,56 +107,26 @@ export const RequestsTable = ({ isOverview }: { isOverview?: boolean }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, limit, search, status, clientIds, templateId]);
 
+  // Fetch data whenever filters or pagination changes. When a filter changes,
+  // restart from the first page instead of fetching with a stale page number.
   useEffect(() => {
+    const filtersChanged = appliedFiltersRef.current !== filterSignature;
+    appliedFiltersRef.current = filterSignature;
+
+    if (filtersChanged && page !== 1) {
+      setPage(1);
+      return;
+    }
+
     fetchData();
-  }, [page, limit, debouncedQuery, status, clientId, templateId]);
+  }, [filterSignature, page, fetchData]);
 
   const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="space-y-4">
-      {!isOverview && (
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative">
-            <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search client..."
-              className="h-8 w-full pl-8 sm:w-52"
-            />
-          </div>
-          <div
-            className={cn(
-              "flex flex-col gap-2 sm:flex-row sm:items-center",
-              isOverview && "justify-between w-full",
-            )}
-          >
-            <Select
-              value={status}
-              onValueChange={(v) => {
-                setStatus(v as AssignedTemplateStatus | "ALL");
-                setPage(1); // Reset to first page on filter change
-              }}
-              disabled={isLoading}
-            >
-              <SelectTrigger className="w-full sm:w-36">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All statuses</SelectItem>
-                <SelectItem value="DRAFT">Draft</SelectItem>
-                <SelectItem value="ASSIGNED">Assigned</SelectItem>
-                <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                <SelectItem value="COMPLETED">Completed</SelectItem>
-                <SelectItem value="OVERDUE">Overdue</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      )}
       <Card className="gap-0 py-0">
         <CardContent className="p-0">
           {isLoading ? (
@@ -210,9 +174,6 @@ export const RequestsTable = ({ isOverview }: { isOverview?: boolean }) => {
               )}
               <TableBody>
                 {data.map((r) => {
-                  const pct = Math.round(
-                    (r.completedFieldsCount / r.totalFieldsCount) * 100,
-                  );
                   return (
                     <TableRow
                       key={r.id}
@@ -250,13 +211,11 @@ export const RequestsTable = ({ isOverview }: { isOverview?: boolean }) => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex w-32 flex-col gap-1.5">
-                          <span className="text-xs font-medium text-muted-foreground tabular-nums">
-                            {r.completedFieldsCount} of {r.totalFieldsCount}{" "}
-                            completed
-                          </span>
-                          <Progress value={pct} />
-                        </div>
+                        <RequestProgressCell
+                          assignationId={r.id}
+                          completedFields={r.completedFieldsCount}
+                          totalFields={r.totalFieldsCount}
+                        />
                       </TableCell>
                       <TableCell>
                         <StatusBadge status={r.status} />
@@ -343,10 +302,16 @@ export const RequestsTable = ({ isOverview }: { isOverview?: boolean }) => {
                                 <Send />
                                 Send manual ping
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <ExternalLink />
-                                View in Google Drive
-                              </DropdownMenuItem>
+                              <Link
+                                href={`https://drive.google.com/drive/folders/${r.clientFolderId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <DropdownMenuItem disabled={!r.clientFolderId}>
+                                  <ExternalLink />
+                                  View in Google Drive
+                                </DropdownMenuItem>
+                              </Link>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 variant="destructive"

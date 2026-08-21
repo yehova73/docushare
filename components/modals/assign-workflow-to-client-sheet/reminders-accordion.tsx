@@ -130,17 +130,74 @@ export function RemindersAccordion({
   };
 
   const handleEditReminder = async (reminder: Reminder) => {
-    const ready = await ensureCloned();
-    if (!ready) return;
-    openAddReminder({
-      batchId,
-      editReminder: reminder,
-      cb: () => refresh(),
-    });
+    if (!batchId) return;
+
+    // If not yet cloned, clone first
+    if (!isCloned) {
+      const confirmation = requireConfirmation({
+        title: "Customize reminders for this batch?",
+        subtitle:
+          "Your global reminders will be cloned for this assignation only. Any changes you make here will NOT affect your global reminders.",
+        buttons: {
+          isSuccess: true,
+          confirm: "Clone & edit",
+          cancel: "Cancel",
+        },
+      });
+      const confirmed = await confirmation.promise;
+      if (!confirmed) return;
+
+      const res = await cloneReminders(batchId);
+      if (!res?.reminders) return;
+
+      // Find the matching cloned reminder by title and type using the fresh response
+      const reminderToEdit =
+        res.reminders.find(
+          (r) =>
+            r.title === reminder.title &&
+            r.reminderType === reminder.reminderType,
+        ) || reminder;
+
+      setReminders(res.reminders);
+      setIsCloned(true);
+
+      openAddReminder({
+        batchId,
+        editReminder: reminderToEdit,
+        cb: () => refresh(),
+      });
+    } else {
+      // Already cloned, find in current reminders
+      const reminderToEdit =
+        reminders.find(
+          (r) =>
+            r.title === reminder.title &&
+            r.reminderType === reminder.reminderType,
+        ) || reminder;
+
+      openAddReminder({
+        batchId,
+        editReminder: reminderToEdit,
+        cb: () => refresh(),
+      });
+    }
   };
 
   const handleDeleteReminder = async (reminder: Reminder) => {
     if (!batchId) return;
+
+    // Ensure we're working with cloned reminders
+    const ready = await ensureCloned();
+    if (!ready) return;
+
+    // Find the actual reminder to delete (might be the cloned version)
+    const reminderToDelete =
+      reminders.find(
+        (r) =>
+          r.title === reminder.title &&
+          r.reminderType === reminder.reminderType,
+      ) || reminder;
+
     const confirmation = requireConfirmation({
       title: "Delete reminder?",
       subtitle:
@@ -153,18 +210,18 @@ export function RemindersAccordion({
     });
     const confirmed = await confirmation.promise;
     if (!confirmed) return;
-    const res = await deleteBatchReminder(batchId, reminder.id);
+    const res = await deleteBatchReminder(batchId, reminderToDelete.id);
     if (res?.id) {
-      setReminders((prev) => prev.filter((r) => r.id !== reminder.id));
+      setReminders((prev) => prev.filter((r) => r.id !== reminderToDelete.id));
     }
   };
 
   const showBatchEditControls = Boolean(batchId) && !readOnly;
 
   return (
-    <>
+    <div>
       <div className="flex items-center gap-2 w-full justify-between">
-        <Label className="cursor-pointer">All Reminders </Label>
+        <Label className="cursor-pointer">Set Reminders </Label>
         {!readOnly && (
           <Button
             size="sm"
@@ -306,6 +363,6 @@ export function RemindersAccordion({
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
