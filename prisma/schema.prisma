@@ -41,6 +41,7 @@ model User {
   signedUpAt                 DateTime                   @default(now())
   lastActivityAt             DateTime                   @default(now())
   userNotificationSettings   UserNotificationSettings?
+  reminderSettings           UserReminderSettings?
   changePasswordTokens       ChangePasswordToken[]
   subscription               Subscription?
   featureAccess              UserFeatureAccess?
@@ -52,6 +53,7 @@ model User {
   clients                    Client[]
   googleDriveAccount         GoogleDriveAccount?
   reminders                  Reminder[]
+  sentReminders              SentReminder[]
   activityLogs               ActivityLog[]
   templateAssignationBatches TemplateAssignationBatch[]
   branding                   UserBranding?
@@ -221,6 +223,14 @@ model UserNotificationSettings {
   devUpdates             Boolean @default(true)
 }
 
+model UserReminderSettings {
+  id          String @id @default(cuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  senderName  String @default("Tabzo")
+  sendingHour Int    @default(9)
+}
+
 model ChangePasswordToken {
   id            String    @id @default(cuid())
   userId        String
@@ -259,6 +269,7 @@ model TemplateClientAssignation {
   templateFolderId String?
   clientFolderId   String?
   reminders        Reminder[]
+  sentReminders    SentReminder[]
   activityLogs     ActivityLog[]
 
   buildStep Int @default(0)
@@ -417,7 +428,25 @@ model Reminder {
   batchId String?
   batch   TemplateAssignationBatch? @relation(fields: [batchId], references: [id], onDelete: Cascade)
 
-  activityLogs ActivityLog[]
+  activityLogs  ActivityLog[]
+  sentReminders SentReminder[]
+}
+
+model SentReminder {
+  id            String   @id @default(cuid())
+  reminderId    String
+  assignmentId  String
+  occurrenceKey String
+  sentAt        DateTime @default(now())
+  providerId    String?
+
+  user       User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  reminder   Reminder                  @relation(fields: [reminderId], references: [id], onDelete: Cascade)
+  assignment TemplateClientAssignation @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@unique([reminderId, assignmentId, occurrenceKey])
+  @@index([userId, sentAt])
 }
 
 enum ReminderScheduleType {

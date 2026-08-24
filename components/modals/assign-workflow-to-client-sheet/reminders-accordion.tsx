@@ -221,25 +221,7 @@ export function RemindersAccordion({
   return (
     <div>
       <div className="flex items-center gap-2 w-full justify-between">
-        <Label className="cursor-pointer">Set Reminders </Label>
-        {!readOnly && (
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={(e) => {
-              e.preventDefault();
-              handleAddReminder();
-            }}
-            disabled={cloning}
-          >
-            {cloning ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Plus className="h-3.5 w-3.5" />
-            )}
-            Add Reminder
-          </Button>
-        )}
+        {/* <Label className="cursor-pointer">Set Reminders </Label> */}
       </div>
 
       {showBatchEditControls && !isCloned && reminders.length > 0 && (
@@ -314,7 +296,24 @@ export function RemindersAccordion({
           No reminders available.
         </div>
       )}
-
+      {!readOnly && (
+        <Button
+          variant="secondary"
+          onClick={(e) => {
+            e.preventDefault();
+            handleAddReminder();
+          }}
+          disabled={cloning}
+          className="mt-3 w-full justify-center gap-2"
+        >
+          {cloning ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Plus className="h-3.5 w-3.5" />
+          )}
+          Add Reminder
+        </Button>
+      )}
       {/* View reminder details modal */}
       <Dialog
         open={Boolean(viewingReminder)}

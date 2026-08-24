@@ -52,7 +52,11 @@ const RequestPage: React.FC<{ params: Promise<{ id: string }> }> = async ({
   return (
     <div className="space-y-6 w-full max-w-7xl mx-auto">
       <DashboardPageHeader
-        title={`${assignment?.name || assignment?.template.name || "Unnamed"} request for ${assignment?.client.name || "Unknown client"}`}
+        title={
+          <div className="max-w-[800px] truncate">
+            {`${assignment?.name || assignment?.template.name || "Unnamed"} request for ${assignment?.client.name || "Unknown client"}`}
+          </div>
+        }
         description={`Manage the responses of the request for the workflow "${assignment?.template.name || "Unnamed"}" assigned to ${assignment?.client.name || "Unknown client"}.`}
         actions={
           <div className="flex items-center gap-2">

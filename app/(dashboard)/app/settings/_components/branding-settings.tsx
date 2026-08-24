@@ -34,18 +34,137 @@ export type BrandingSettingsData = {
   submittedMessage: string;
 };
 
-const COLOR_PRESETS = [
-  "#0d1420",
-  "#0f172a",
-  "#1e293b",
-  "#18181b",
-  "#6366f1",
-  "#7c3aed",
-  "#0ea5e9",
-  "#10b981",
-  "#f59e0b",
-  "#f43f5e",
-  "#ffffff",
+const SURFACE_PRESETS = [
+  {
+    name: "Midnight",
+    backgroundColor: "#0d1420",
+    headerFooterColor: "#0f172a",
+    primaryColor: "#6366f1",
+    fieldBackgroundColor: "#1e293b",
+    sectionCardBackgroundColor: "#172033",
+    sectionTitleColor: "#f8fafc",
+    fieldTitleColor: "#e2e8f0",
+    fieldSubtitleColor: "#94a3b8",
+    inputBackgroundColor: "#0f172a",
+    uploadBackgroundColor: "#1e293b",
+  },
+  {
+    name: "Slate",
+    backgroundColor: "#f8fafc",
+    headerFooterColor: "#0f172a",
+    primaryColor: "#2563eb",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#f1f5f9",
+    sectionTitleColor: "#0f172a",
+    fieldTitleColor: "#1e293b",
+    fieldSubtitleColor: "#64748b",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#f1f5f9",
+  },
+  {
+    name: "Ocean",
+    backgroundColor: "#f0f9ff",
+    headerFooterColor: "#164e63",
+    primaryColor: "#0284c7",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#e0f2fe",
+    sectionTitleColor: "#082f49",
+    fieldTitleColor: "#0c4a6e",
+    fieldSubtitleColor: "#0369a1",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#e0f2fe",
+  },
+  {
+    name: "Forest",
+    backgroundColor: "#f0fdf4",
+    headerFooterColor: "#14532d",
+    primaryColor: "#16a34a",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#dcfce7",
+    sectionTitleColor: "#052e16",
+    fieldTitleColor: "#14532d",
+    fieldSubtitleColor: "#15803d",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#dcfce7",
+  },
+  {
+    name: "Rose",
+    backgroundColor: "#fff1f2",
+    headerFooterColor: "#881337",
+    primaryColor: "#e11d48",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#ffe4e6",
+    sectionTitleColor: "#4c0519",
+    fieldTitleColor: "#881337",
+    fieldSubtitleColor: "#be123c",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#ffe4e6",
+  },
+  {
+    name: "Lavender",
+    backgroundColor: "#faf5ff",
+    headerFooterColor: "#581c87",
+    primaryColor: "#9333ea",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#f3e8ff",
+    sectionTitleColor: "#3b0764",
+    fieldTitleColor: "#581c87",
+    fieldSubtitleColor: "#7e22ce",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#f3e8ff",
+  },
+  {
+    name: "Sand",
+    backgroundColor: "#fffbeb",
+    headerFooterColor: "#78350f",
+    primaryColor: "#d97706",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#fef3c7",
+    sectionTitleColor: "#451a03",
+    fieldTitleColor: "#78350f",
+    fieldSubtitleColor: "#b45309",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#fef3c7",
+  },
+  {
+    name: "Charcoal",
+    backgroundColor: "#18181b",
+    headerFooterColor: "#09090b",
+    primaryColor: "#a1a1aa",
+    fieldBackgroundColor: "#27272a",
+    sectionCardBackgroundColor: "#202023",
+    sectionTitleColor: "#fafafa",
+    fieldTitleColor: "#e4e4e7",
+    fieldSubtitleColor: "#a1a1aa",
+    inputBackgroundColor: "#18181b",
+    uploadBackgroundColor: "#27272a",
+  },
+  {
+    name: "Citrus",
+    backgroundColor: "#f7fee7",
+    headerFooterColor: "#365314",
+    primaryColor: "#65a30d",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#ecfccb",
+    sectionTitleColor: "#1a2e05",
+    fieldTitleColor: "#365314",
+    fieldSubtitleColor: "#4d7c0f",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#ecfccb",
+  },
+  {
+    name: "Plum",
+    backgroundColor: "#fdf4ff",
+    headerFooterColor: "#701a75",
+    primaryColor: "#c026d3",
+    fieldBackgroundColor: "#ffffff",
+    sectionCardBackgroundColor: "#fae8ff",
+    sectionTitleColor: "#4a044e",
+    fieldTitleColor: "#701a75",
+    fieldSubtitleColor: "#a21caf",
+    inputBackgroundColor: "#ffffff",
+    uploadBackgroundColor: "#fae8ff",
+  },
 ];
 
 const PLACEHOLDERS = [
@@ -117,7 +236,7 @@ function ColorField({
         className="w-32 font-mono"
         placeholder="#000000"
       />
-      <div className="flex flex-wrap gap-1">
+      {/* <div className="flex flex-wrap gap-1">
         {COLOR_PRESETS.map((color) => (
           <button
             key={color}
@@ -128,7 +247,7 @@ function ColorField({
             aria-label={`Set color ${color}`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -306,6 +425,35 @@ export function BrandingSettings({
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Surfaces
             </span>
+            <div className="flex flex-wrap gap-2">
+              {SURFACE_PRESETS.map((preset) => (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => {
+                    setBackgroundColor(preset.backgroundColor);
+                    setHeaderFooterColor(preset.headerFooterColor);
+                    setPrimaryColor(preset.primaryColor);
+                    setFieldBackgroundColor(preset.fieldBackgroundColor);
+                    setSectionCardBackgroundColor(
+                      preset.sectionCardBackgroundColor,
+                    );
+                    setSectionTitleColor(preset.sectionTitleColor);
+                    setFieldTitleColor(preset.fieldTitleColor);
+                    setFieldSubtitleColor(preset.fieldSubtitleColor);
+                    setInputBackgroundColor(preset.inputBackgroundColor);
+                    setUploadBackgroundColor(preset.uploadBackgroundColor);
+                  }}
+                  className="flex items-center gap-2 rounded-md border border-input bg-background px-2.5 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                >
+                  <span
+                    className="size-3 rounded-full border border-black/10"
+                    style={{ backgroundColor: preset.primaryColor }}
+                  />
+                  {preset.name}
+                </button>
+              ))}
+            </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <Field label="Background color">
                 <ColorField
@@ -324,7 +472,7 @@ export function BrandingSettings({
               </Field>
               <Field
                 label="Field background"
-                hint="Background of each field card."
+                // hint="Background of each field card."
               >
                 <ColorField
                   value={fieldBackgroundColor}
@@ -333,7 +481,7 @@ export function BrandingSettings({
               </Field>
               <Field
                 label="Section card background"
-                hint="Background of each section card."
+                // hint="Background of each section card."
               >
                 <ColorField
                   value={sectionCardBackgroundColor}

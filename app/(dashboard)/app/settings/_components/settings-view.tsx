@@ -21,6 +21,7 @@ import Link from "next/link";
 import { DriveFolderSelector } from "@/components/drive-folder-selector";
 import { Badge } from "@/components/ui/badge";
 import { BrandingSettings, BrandingSettingsData } from "./branding-settings";
+import { ReminderSettings, ReminderSettingsData } from "./reminder-settings";
 
 const DEFAULT_BRANDING: BrandingSettingsData = {
   name: null,
@@ -55,7 +56,8 @@ export const SettingsView: React.FC<{
     folderName?: string | null;
   };
   branding?: BrandingSettingsData;
-}> = ({ email, hasPassword, drive, branding }) => {
+  reminderSettings?: ReminderSettingsData;
+}> = ({ email, hasPassword, drive, branding, reminderSettings }) => {
   const [closePrev, setClosePrev] = useState(true);
   const [freq, setFreq] = useState("15");
   const [prefix, setPrefix] = useState(false);
@@ -139,6 +141,14 @@ export const SettingsView: React.FC<{
           Customize how your client portal looks and reads for your clients.
         </p>
         <BrandingSettings initial={branding ?? DEFAULT_BRANDING} />
+      </section>
+
+      <section className="mt-8">
+        <SectionTitle>Reminders</SectionTitle>
+        <p className="text-xs text-muted-foreground mb-3">
+          Choose how reminder emails are presented and when they are sent.
+        </p>
+        <ReminderSettings initial={reminderSettings} />
       </section>
 
       <section className="mt-8">

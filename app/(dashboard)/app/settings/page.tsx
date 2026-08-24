@@ -2,6 +2,7 @@ import { getUserFromSession } from "@/actions/account/account";
 import { prisma } from "@/lib/prisma";
 import { SettingsView } from "./_components/settings-view";
 import type { BrandingSettingsData } from "./_components/branding-settings";
+import type { ReminderSettingsData } from "./_components/reminder-settings";
 
 export default async function SettingsPage() {
   const user = await getUserFromSession();
@@ -68,11 +69,17 @@ export default async function SettingsPage() {
       }
     : undefined;
 
+  const reminderSettings = await prisma.userReminderSettings.findUnique({
+    where: { userId: user.id },
+    select: { senderName: true, sendingHour: true },
+  });
+
   return (
     <SettingsView
       email={details?.email || ""}
       hasPassword={!!details?.password}
       branding={brandingData}
+      reminderSettings={reminderSettings ?? undefined}
       drive={
         details?.googleDriveAccount
           ? {

@@ -59,7 +59,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { RequestProgressCell } from "./request-progress-cell";
 
@@ -83,7 +83,11 @@ export const RequestsTable: React.FC<{
 
   const router = useRouter();
 
-  const filterSignature = `${search}||${status}||${clientIds.join(",")}`;
+  // Props may provide a new array instance on every render. Keep the fetch
+  // dependencies stable when the actual client IDs have not changed.
+  const clientIdsKey = clientIds.join(",");
+  const stableClientIds = useMemo(() => clientIds, [clientIdsKey]);
+  const filterSignature = `${search}||${status}||${clientIdsKey}`;
   const appliedFiltersRef = useRef(filterSignature);
 
   const fetchData = useCallback(async () => {
@@ -94,7 +98,7 @@ export const RequestsTable: React.FC<{
         limit,
         search,
         status,
-        clientIds,
+        clientIds: stableClientIds,
         templateId,
       });
       setData(response.data);
@@ -107,7 +111,7 @@ export const RequestsTable: React.FC<{
     } finally {
       setIsLoading(false);
     }
-  }, [page, limit, search, status, clientIds, templateId]);
+  }, [page, limit, search, status, stableClientIds, templateId]);
 
   // Fetch data whenever filters or pagination changes. When a filter changes,
   // restart from the first page instead of fetching with a stale page number.

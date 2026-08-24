@@ -50,15 +50,19 @@ export const sendEmail = async <T>(props: EmailOptionsType<T>) => {
   });
   console.log(`SENDING EMAIL`, props.subject);
 
-  // const res = await brevo.transactionalEmails.sendTransacEmail({
-  //   to: [{ email: props.receiver }],
-  //   sender: {
-  //     name: props.senderName || "FluxGate",
-  //     email: props.senderEmail,
-  //   },
-  //   subject: props.subject,
-  //   textContent: emailText,
-  //   htmlContent: emailHtml,
-  // });
-  // console.log(res);
+  const res = await brevo.transactionalEmails.sendTransacEmail({
+    to: [{ email: props.receiver }],
+    sender: {
+      name: props.senderName || "Tabzo",
+      email:
+        props.senderEmail ||
+        process.env.BREVO_SENDER_EMAIL ||
+        "no-reply@tabzo.app",
+    },
+    subject: props.subject,
+    textContent: emailText,
+    htmlContent: emailHtml,
+  });
+
+  return res;
 };
