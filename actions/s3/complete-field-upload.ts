@@ -9,7 +9,7 @@ import { FieldCompletionValueGetPayload } from "@/lib/generated/prisma/models";
 import { after } from "next/server";
 import { updateAssignedTemplateCompletion } from "../save-field-value";
 import { getValidDriveAccessToken } from "../drive/get-valid-drive-access-token";
-import { updateSpreadsheetFieldValue } from "../drive/spreeadsheet/update-spreadsheet-field-value";
+import { updateSpreadsheetFieldValueV2 } from "../drive/spreeadsheet/update-spreadsheet-field-value-v2";
 
 export interface CompleteUploadParams {
   fieldId: string;
@@ -125,20 +125,19 @@ export const completeFieldUploadAction = async (
       }
 
       if (!userId) return;
+      const assignation = field.section.template.templateClientAssignation;
+      if (!assignation?.templateFolderId || !assignation?.clientFolderId) {
+        console.warn(
+          "Drive folders not set up for assignation:",
+          assignation?.id,
+        );
+        return;
+      }
       const googleDriveAccount = await prisma.googleDriveAccount.findUnique({
         where: { userId: userId },
       });
       if (!googleDriveAccount) {
         console.warn("No Google Drive account found for user:", userId);
-        return;
-      }
-      const spreadsheetId =
-        field.section.template.templateClientAssignation?.spreadsheetId;
-      if (!spreadsheetId) {
-        console.warn(
-          "No spreadsheet ID found for assignation:",
-          field.section.template.templateClientAssignation?.id,
-        );
         return;
       }
       const accessToken = await getValidDriveAccessToken();
@@ -150,16 +149,27 @@ export const completeFieldUploadAction = async (
         return;
       }
 
-      await updateSpreadsheetFieldValue({
-        spreadsheetId: spreadsheetId || undefined,
-        accessToken: accessToken,
-        requestId: field.section.template.templateClientAssignation?.id || "",
-        columnName: field.name,
-        newValue: res?.files.map((file) => file.s3Key).join(", ") || "",
-        parentFolderId:
-          field.section.template.templateClientAssignation?.templateFolderId ||
-          undefined,
+      const result = await updateSpreadsheetFieldValueV2({
+        spreadsheetId: assignation.spreadsheetId ?? undefined,
+        clientSummaryFileId: assignation.clientSummaryFileId ?? undefined,
+        accessToken,
+        requestId: assignation.id,
+        parentFolderId: assignation.templateFolderId,
+        clientFolderId: assignation.clientFolderId,
       });
+
+      if (
+        result.spreadsheetId !== assignation.spreadsheetId ||
+        result.clientSummaryFileId !== assignation.clientSummaryFileId
+      ) {
+        await prisma.templateClientAssignation.update({
+          where: { id: assignation.id },
+          data: {
+            spreadsheetId: result.spreadsheetId,
+            clientSummaryFileId: result.clientSummaryFileId,
+          },
+        });
+      }
     });
 
     return {

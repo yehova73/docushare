@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getUserFromSession } from "./account/account";
 import { FieldCompletionValue } from "@/lib/generated/prisma/client";
 import { after } from "next/server";
-import { updateSpreadsheetFieldValue } from "./drive/spreeadsheet/update-spreadsheet-field-value";
+import { updateSpreadsheetFieldValueV2 } from "./drive/spreeadsheet/update-spreadsheet-field-value-v2";
 import { getValidDriveAccessToken } from "./drive/get-valid-drive-access-token";
 
 export const saveFieldValueAction = async (
@@ -145,9 +145,11 @@ export const saveFieldValueAction = async (
         console.warn("No Google Drive account found for user:", user.id);
         return;
       }
-      const spreadsheetId = assignation.spreadsheetId;
-      if (!spreadsheetId) {
-        console.warn("No spreadsheet ID found for assignation:", assignationId);
+      if (!assignation.templateFolderId || !assignation.clientFolderId) {
+        console.warn(
+          "Drive folders not set up for assignation:",
+          assignationId,
+        );
         return;
       }
       const accessToken = await getValidDriveAccessToken();
@@ -159,14 +161,28 @@ export const saveFieldValueAction = async (
         return;
       }
 
-      await updateSpreadsheetFieldValue({
-        spreadsheetId: assignation.spreadsheetId || undefined,
-        accessToken: accessToken,
+      const result = await updateSpreadsheetFieldValueV2({
+        spreadsheetId: assignation.spreadsheetId ?? undefined,
+        clientSummaryFileId: assignation.clientSummaryFileId ?? undefined,
+        accessToken,
         requestId: assignationId,
-        columnName: field.name,
-        newValue: value,
-        parentFolderId: assignation?.templateFolderId || undefined,
+        parentFolderId: assignation.templateFolderId,
+        clientFolderId: assignation.clientFolderId,
       });
+
+      // Persist Drive file IDs back to DB if they changed
+      if (
+        result.spreadsheetId !== assignation.spreadsheetId ||
+        result.clientSummaryFileId !== assignation.clientSummaryFileId
+      ) {
+        await prisma.templateClientAssignation.update({
+          where: { id: assignationId },
+          data: {
+            spreadsheetId: result.spreadsheetId,
+            clientSummaryFileId: result.clientSummaryFileId,
+          },
+        });
+      }
     });
     return {
       status: "ok",

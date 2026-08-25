@@ -265,12 +265,13 @@ model TemplateClientAssignation {
 
   lastActivityAt DateTime?
 
-  spreadsheetId    String?
-  templateFolderId String?
-  clientFolderId   String?
-  reminders        Reminder[]
-  sentReminders    SentReminder[]
-  activityLogs     ActivityLog[]
+  spreadsheetId       String?
+  templateFolderId    String?
+  clientFolderId      String?
+  clientSummaryFileId String?
+  reminders           Reminder[]
+  sentReminders       SentReminder[]
+  activityLogs        ActivityLog[]
 
   buildStep Int @default(0)
 }
@@ -398,6 +399,7 @@ model File {
 
   fieldCompletionValue   FieldCompletionValue? @relation(fields: [fieldCompletionValueId], references: [id])
   fieldCompletionValueId String?
+  driveFileUrl           String?
 
   @@index([s3Key])
 }
