@@ -32,7 +32,6 @@ export function ReviewStep() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Clients */}
       <Accordion
         type="multiple"
         defaultValue={["clients", "template", "reminders"]}
@@ -86,14 +85,7 @@ export function ReviewStep() {
             )}
           </AccordionContent>
         </AccordionItem>
-      </Accordion>
 
-      {/* Template */}
-      <Accordion
-        type="multiple"
-        defaultValue={["template", "reminders"]}
-        className="rounded-lg border border-border px-4"
-      >
         <AccordionItem value="template">
           <AccordionTrigger>
             <span className="flex items-center gap-2">
@@ -103,7 +95,7 @@ export function ReviewStep() {
                 <span className="flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
                   <Check className="size-3.5 text-primary" />
                   {selectedTemplate.name} · {selectedTemplate.totalFields}{" "}
-                  fields , {selectedTemplate.requiredFields} required
+                  fields · {selectedTemplate.requiredFields} required
                 </span>
               )}
             </span>
@@ -121,15 +113,8 @@ export function ReviewStep() {
             )}
           </AccordionContent>
         </AccordionItem>
-      </Accordion>
 
-      {/* Reminders */}
-      <Accordion
-        type="multiple"
-        defaultValue={["reminders"]}
-        className="rounded-lg border border-border px-4"
-      >
-        <AccordionItem value="reminders">
+        <AccordionItem value="reminders" className="border-b-0">
           <AccordionTrigger>
             <span className="flex items-center gap-2">
               <Bell className="size-4 text-muted-foreground" />

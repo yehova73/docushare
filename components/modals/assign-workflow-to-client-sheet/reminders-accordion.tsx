@@ -219,11 +219,7 @@ export function RemindersAccordion({
   const showBatchEditControls = Boolean(batchId) && !readOnly;
 
   return (
-    <div>
-      <div className="flex items-center gap-2 w-full justify-between">
-        {/* <Label className="cursor-pointer">Set Reminders </Label> */}
-      </div>
-
+    <div className="flex flex-col gap-3">
       {showBatchEditControls && !isCloned && reminders.length > 0 && (
         <div className="rounded-md border border-dashed border-muted-foreground/30 bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
           Showing your global reminders. Editing them will create a copy just
@@ -232,7 +228,8 @@ export function RemindersAccordion({
       )}
 
       {loading ? (
-        <div className="text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
           Loading reminders...
         </div>
       ) : reminders.length > 0 ? (
@@ -292,8 +289,8 @@ export function RemindersAccordion({
           ))}
         </div>
       ) : (
-        <div className="text-sm text-muted-foreground">
-          No reminders available.
+        <div className="flex items-center justify-center rounded-lg border border-dashed py-8 text-sm text-muted-foreground">
+          No reminders set up yet.
         </div>
       )}
       {!readOnly && (
@@ -304,7 +301,7 @@ export function RemindersAccordion({
             handleAddReminder();
           }}
           disabled={cloning}
-          className="mt-3 w-full justify-center gap-2"
+          className="w-full justify-center gap-2"
         >
           {cloning ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />

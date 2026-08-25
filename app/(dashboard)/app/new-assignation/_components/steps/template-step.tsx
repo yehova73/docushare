@@ -79,41 +79,45 @@ export function TemplateStep() {
             No templates available.
           </div>
         ) : (
-          <div className="flex items-center gap-2">
-            <Select
-              value={selectedTemplateId ?? undefined}
-              onValueChange={(value) => setSelectedTemplateId(value)}
-            >
-              <SelectTrigger className="w-full" size="sm">
-                <SelectValue placeholder="Select a template..." />
-              </SelectTrigger>
-              <SelectContent position="popper" align="start">
-                {templates.map((template) => (
-                  <SelectItem key={template.id} value={template.id}>
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="truncate">{template.name}</span>
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {template.totalFields} fields ·{" "}
-                        {template.requiredFields} required
+          <div className="border-l border-primary/50 pl-3">
+            <div className="flex items-center gap-2">
+              <Select
+                value={selectedTemplateId ?? undefined}
+                onValueChange={(value) => setSelectedTemplateId(value)}
+              >
+                <SelectTrigger className="w-full" size="sm">
+                  <SelectValue placeholder="Select a template..." />
+                </SelectTrigger>
+                <SelectContent position="popper" align="start">
+                  {templates.map((template) => (
+                    <SelectItem key={template.id} value={template.id}>
+                      <span className="flex items-center justify-between gap-2">
+                        <span className="truncate">{template.name}</span>
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                          {template.totalFields} fields ·{" "}
+                          {template.requiredFields} required
+                        </span>
                       </span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={handleEditTemplate}
-              disabled={cloning}
-            >
-              {cloning ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Pencil className="h-3.5 w-3.5" />
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedTemplateId && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleEditTemplate}
+                  disabled={cloning}
+                >
+                  {cloning ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Pencil className="h-3.5 w-3.5" />
+                  )}
+                  Edit template
+                </Button>
               )}
-              Edit template
-            </Button>
+            </div>
           </div>
         )}
       </div>
