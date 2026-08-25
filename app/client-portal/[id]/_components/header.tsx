@@ -41,15 +41,13 @@ export const ClientPortalHeader: React.FC<{
             </span>
           </div>
         </div>
-        <Badge className="gap-1 bg-emerald-500/12 text-emerald-700 dark:text-emerald-400">
-          <span className="hidden sm:inline">
-            Sent on{" "}
-            {sentDate.toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </span>
+        <Badge className="hidden sm:flex gap-1 bg-success/12 text-success">
+          Sent on{" "}
+          {sentDate.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
         </Badge>
       </div>
     </header>

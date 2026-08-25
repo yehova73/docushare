@@ -28,7 +28,7 @@ export const RecentActivity: React.FC<{ userId: string }> = async ({
   });
 
   return (
-    <div className="pl-4 relative">
+    <div className="relative flex flex-col pl-5">
       {!lastActivity.length && (
         <Empty>
           <EmptyHeader>
@@ -45,30 +45,28 @@ export const RecentActivity: React.FC<{ userId: string }> = async ({
       )}
       {!!lastActivity.length && (
         <span
-          className="absolute top-2 bottom-2 left-1 w-px bg-border"
+          className="absolute top-2 bottom-2 left-1.5 w-px bg-border"
           aria-hidden
         />
       )}
-      {lastActivity.slice(0, 7).map((item, index) => (
-        <div key={index}>
-          <Link href={`/app/requests/${item.assignationId}`} passHref>
-            <div className="relative flex justify-between items-center gap-2 p-1 rounded-md hover:bg-muted transition-colors cursor-pointer">
-              <span
-                className="absolute top-[10px] -left-[15.5px] size-2 rounded-full ring-4 ring-background bg-primary "
-                aria-hidden
-              />
-              <div>
-                <div className="font-semibold line-clamp-1">{item.title}</div>
-              </div>
-              <div className="text-sm text-muted-foreground text-nowrap">
-                {item.createdAt.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </div>
+      {lastActivity.map((item, index) => (
+        <Link key={index} href={`/app/requests/${item.assignationId}`} passHref>
+          <div className="relative flex justify-between items-center gap-2 p-1 rounded-md hover:bg-muted transition-colors cursor-pointer">
+            <span
+              className="absolute top-[10px] left-[-11px] size-2 rounded-full ring-4 ring-background bg-primary"
+              aria-hidden
+            />
+            <div>
+              <div className="font-semibold line-clamp-1">{item.title}</div>
             </div>
-          </Link>
-        </div>
+            <div className="text-sm text-muted-foreground text-nowrap">
+              {item.createdAt.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+          </div>
+        </Link>
       ))}
     </div>
   );

@@ -73,7 +73,6 @@ export const RequestsTable: React.FC<{
   clientIds?: string[];
   status?: AssignedTemplateStatus | "ALL";
 }> = ({ isOverview, search = "", clientIds = [], status = "ALL" }) => {
-  const [templateId, setTemplateId] = useState<string | undefined>();
   const [data, setData] = useState<RequestType[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -99,7 +98,6 @@ export const RequestsTable: React.FC<{
         search,
         status,
         clientIds: stableClientIds,
-        templateId,
       });
       setData(response.data);
       if (response.total !== undefined) {

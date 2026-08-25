@@ -45,7 +45,7 @@ const quickStartActions = [
     key: "sentFirstRequest",
     title: "Send your first request",
     icon: Send,
-    link: "#",
+    link: "/app/new-assignation",
   },
 ] as const;
 
@@ -91,8 +91,13 @@ export const QuickStartContent: React.FC<QuickStartContentProps> = ({
 
           const content = (
             <div
-              className="flex items-center justify-between p-2 border rounded-lg hover:bg-accent hover:cursor-pointer"
-              onClick={(e) => hasCustomAction && handleActionClick(e, action)}
+              className={cn(
+                "flex items-center justify-between p-2 border rounded-lg transition-colors",
+                !completed && "hover:bg-accent cursor-pointer",
+              )}
+              onClick={(e) =>
+                !completed && hasCustomAction && handleActionClick(e, action)
+              }
             >
               <div
                 className={cn(
@@ -107,22 +112,20 @@ export const QuickStartContent: React.FC<QuickStartContentProps> = ({
               </div>
               <CircleCheck
                 className={`w-5 h-5 ${
-                  completed ? "text-green-500" : "opacity-20"
+                  completed ? "text-success" : "opacity-20"
                 }`}
               />
             </div>
           );
 
           if (hasCustomAction) {
-            return <div key={index}>{content}</div>;
+            return <React.Fragment key={action.key}>{content}</React.Fragment>;
           }
 
           return (
-            <div key={index}>
-              <Link href={action.link ?? "#"} passHref>
-                {content}
-              </Link>
-            </div>
+            <Link key={action.key} href={action.link ?? "#"} passHref>
+              {content}
+            </Link>
           );
         })}
       </CardContent>

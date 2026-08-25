@@ -6,10 +6,12 @@ export const DashboardPageHeader: React.FC<{
   actions?: React.ReactNode;
   pre?: React.ReactNode;
   isModal?: boolean;
-  cls?: string;
-}> = ({ pre, title, isModal, actions, description, cls }) => {
+  className?: string;
+}> = ({ pre, title, isModal, actions, description, className }) => {
   return (
-    <div className={`flex space-x-2 items-center justify-between ${cls || ""}`}>
+    <div
+      className={`flex space-x-2 items-center justify-between ${className || ""}`}
+    >
       {pre}
       <div className="grow">
         <h1

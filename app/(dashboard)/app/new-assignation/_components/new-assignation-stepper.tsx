@@ -113,7 +113,7 @@ export function NewAssignationStepper() {
               return (
                 <li key={s.id} className="flex items-center gap-2">
                   {index > 0 && (
-                    <span className="text-muted-foreground/40">/</span>
+                    <span className="text-muted-foreground/40">›</span>
                   )}
                   <button
                     type="button"

@@ -12,21 +12,21 @@ import type React from "react";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Tabzo: Freeze, Focus, and Restore Your Workspaces",
+  title: "DocFetch — Dashboard",
   description:
-    "Organize active Chrome windows into persistent workspaces. Auto-sync open tabs, customize focus hubs with Tab-0, and time-travel through snapshot state history across every device.",
+    "Collect documents, files, and information from clients with one secure link. Files land directly in your Google Drive.",
   openGraph: {
-    title: "Tabzo: Freeze, Focus, and Restore Your Workspaces",
+    title: "DocFetch — Dashboard",
     description:
-      "Organize active Chrome windows into persistent workspaces. Auto-sync open tabs, customize focus hubs with Tab-0, and time-travel through snapshot state history across every device.",
-    url: "https://tabzo.app",
-    siteName: "Tabzo",
+      "Collect documents, files, and information from clients with one secure link. Files land directly in your Google Drive.",
+    url: "https://docfetch.app",
+    siteName: "DocFetch",
     images: [
       {
-        url: "https://tabzo.app/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Tabzo - Window & Tab Management Workspace",
+        alt: "DocFetch — Secure document collection",
       },
     ],
     locale: "en_US",
@@ -34,10 +34,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tabzo: Freeze, Focus, and Restore Your Workspaces",
+    title: "DocFetch — Dashboard",
     description:
-      "Organize active Chrome windows into persistent workspaces with real-time tab syncing and time-travel state recovery.",
-    images: ["https://tabzo.app/og-image.png"],
+      "Collect documents and files from clients with one secure link. Stop chasing — files land in your Google Drive.",
+    images: ["/og-image.png"],
   },
 };
 
@@ -68,8 +68,7 @@ export default async function DashboardLayout({
       <div className="[--header-height:calc(--spacing(14))]" id="dashboard">
         <SidebarProvider
           className="flex flex-col"
-          // defaultOpen={sidebarCookie?.value === "true"}
-          defaultOpen={true}
+          defaultOpen={sidebarCookie?.value !== "false"}
         >
           {/* <DashboardHeader
             organizations={

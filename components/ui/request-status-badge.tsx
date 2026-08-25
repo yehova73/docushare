@@ -12,8 +12,7 @@ const config: Record<
     icon: CircleDot,
   },
   COMPLETED: {
-    className:
-      "bg-emerald-500/12 text-emerald-700 dark:text-emerald-400 dark:bg-emerald-400/12",
+    className: "bg-success/12 text-success",
     icon: CheckCircle2,
   },
   ASSIGNED: {
@@ -22,8 +21,7 @@ const config: Record<
     icon: CircleDot,
   },
   DRAFT: {
-    className:
-      "bg-amber-500/12 text-amber-700 dark:text-amber-400 dark:bg-amber-400/12",
+    className: "bg-secondary text-secondary-foreground",
     icon: CircleDot,
   },
   IN_PROGRESS: {

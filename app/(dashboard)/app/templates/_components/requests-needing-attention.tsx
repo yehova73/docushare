@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -7,12 +6,11 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { StatusBadge } from "@/components/ui/request-status-badge";
 import { prisma } from "@/lib/prisma";
-import { cn } from "@/lib/utils";
 import { subDays } from "date-fns";
 import { ArrowRight, FileX } from "lucide-react";
 import Link from "next/link";
-import { match } from "ts-pattern";
 
 export const RequestsNeedingAttention: React.FC<{ userId: string }> = async ({
   userId,
@@ -68,41 +66,8 @@ export const RequestsNeedingAttention: React.FC<{ userId: string }> = async ({
               {request.name || request.template.name}
             </div>
           </div>
-          <div className=" ml-auto flex items-center gap-2">
-            {/* {request.status === "OVERDUE" ||
-              (request.dueDate && request.dueDate < new Date() && (
-                <Badge
-                  className={cn("ml-auto", "bg-orange-900 text-orange-100")}
-                >
-                  {request.completedFieldsCount} / {request.totalFieldsCount}{" "}
-                  fields completed
-                </Badge>
-              ))} */}
-            <Badge
-              className={cn(
-                match(request)
-                  .when(
-                    (x) =>
-                      x.status === "OVERDUE" ||
-                      (x.dueDate && x.dueDate < new Date()),
-                    () => "bg-red-900 text-red-100",
-                  )
-                  .when(
-                    (x) => x.status === "COMPLETED",
-                    () => "bg-green-900 text-green-100",
-                  )
-                  .otherwise(() => "bg-blue-900 text-blue-100"),
-              )}
-            >
-              {request.status === "DRAFT"
-                ? "Draft"
-                : request.status === "COMPLETED"
-                  ? `Completed ${request.completedAt?.toLocaleDateString()}`
-                  : request.status === "OVERDUE" ||
-                      (request.dueDate && request.dueDate < new Date())
-                    ? `Overdue since ${request.dueDate?.toLocaleDateString()}`
-                    : `Due ${request.dueDate?.toLocaleDateString()}`}
-            </Badge>
+          <div className="ml-auto flex items-center gap-2">
+            <StatusBadge status={request.status} />
             <Link href={`/app/requests/${request.id}`} passHref>
               <Button size={"sm"}>
                 View Request <ArrowRight />

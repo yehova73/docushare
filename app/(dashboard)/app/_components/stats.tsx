@@ -52,7 +52,6 @@ export const OverviewStats: React.FC<{ userId: string }> = async ({
   `;
 
   const metrics = result[0];
-  console.log("Overview metrics:", metrics);
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <StatUI

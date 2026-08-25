@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getInitials } from "@/lib/utils";
 
 import { useNewAssignationContext } from "../new-assignation-context";
 
@@ -61,10 +62,7 @@ export function ReviewStep() {
                   >
                     <Avatar>
                       <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                        {client.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
+                        {getInitials(client.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">

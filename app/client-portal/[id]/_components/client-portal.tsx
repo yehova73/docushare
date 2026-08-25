@@ -61,8 +61,8 @@ export function ClientPortal() {
   const canSubmit = requiredPending === 0;
 
   return (
-    <div className="">
-      {/* Header */}
+    <div>
+      {/* Header */
 
       <main className="mx-auto max-w-2xl px-4 pt-24 pb-32">
         <AnimatePresence mode="wait">
@@ -85,7 +85,7 @@ export function ClientPortal() {
                   {title}
                 </h1>
                 {dueDate && (
-                  <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-700 dark:text-amber-400">
+                  <div className="flex items-center gap-2 rounded-lg border border-warn/30 bg-warn/10 px-3 py-2 text-sm font-medium text-warn-foreground">
                     <Clock className="size-4 shrink-0" />
                     {formatDueDate(dueDate)}
                   </div>
@@ -116,7 +116,7 @@ export function ClientPortal() {
                           borderColor: "rgba(255,255,255,0.08)",
                         }}
                       >
-                        <AccordionTrigger className="hover:no-underline hover:bg-background/50 focus:bg-background/50 focus:ring-0 cursor-pointer p-2 flex items-center">
+                        <AccordionTrigger className="hover:no-underline hover:bg-background/50 cursor-pointer p-2 flex items-center">
                           <div className="flex flex-1 items-center gap-3 text-left mr-2">
                             <div className="flex flex-1 justify-between gap-2">
                               <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export function ClientPortal() {
                                   {section.name}
                                 </span>
                                 {isComplete && (
-                                  <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                                  <CheckCircle2 className="size-4 text-success" />
                                 )}
                               </div>
                               <div className="flex items-center gap-2 min-w-1/2">
@@ -188,7 +188,7 @@ export function ClientPortal() {
               disabled={!canSubmit}
               onClick={() => setSubmitted(true)}
             >
-              Submit all documents
+              Submit
             </Button>
           </div>
         </div>

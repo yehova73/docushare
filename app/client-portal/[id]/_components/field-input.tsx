@@ -73,7 +73,7 @@ export function FieldInput({
 
   return (
     <Card
-      className={cn("transition-colors", isDone && "ring-emerald-500/30")}
+      className={cn("transition-colors", isDone && "ring-success/30")}
       style={{ backgroundColor: "var(--portal-field-bg)" }}
     >
       <CardContent className="flex flex-col gap-3 px-0">
@@ -112,7 +112,7 @@ export function FieldInput({
                   <Edit className="opacity-80 " />
                 )}
               </Button>
-              <CheckCircle2 className="text-emerald-500" />
+              <CheckCircle2 className="text-success" />
             </div>
           )}
         </div>

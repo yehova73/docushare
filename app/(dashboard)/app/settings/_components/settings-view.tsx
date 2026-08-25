@@ -1,12 +1,6 @@
 "use client";
-import {
-  Download,
-  KeyRound,
-  Mail,
-  RotateCcw,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { exportAccountDataAction } from "@/actions/account/export-data";
+import { Download, KeyRound, Mail, RotateCcw, Trash2 } from "lucide-react";
 import { Divider, Panel, SectionTitle, SettingRow } from "./components";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -58,9 +52,6 @@ export const SettingsView: React.FC<{
   branding?: BrandingSettingsData;
   reminderSettings?: ReminderSettingsData;
 }> = ({ email, hasPassword, drive, branding, reminderSettings }) => {
-  const [closePrev, setClosePrev] = useState(true);
-  const [freq, setFreq] = useState("15");
-  const [prefix, setPrefix] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
@@ -109,8 +100,8 @@ export const SettingsView: React.FC<{
             desc="Client uploads stream directly into your Drive account. You can revoke access at any time."
           >
             {drive ? (
-              <Badge className="bg-lime-100 text-lime-800">
-                <div className="bg-green-600 w-3 h-3 rounded-full inline-block mr-2" />
+              <Badge className="bg-success/12 text-success gap-1.5">
+                <div className="size-2 rounded-full bg-success" aria-hidden />
                 Connected
               </Badge>
             ) : (
@@ -153,55 +144,28 @@ export const SettingsView: React.FC<{
 
       <section className="mt-8">
         <SectionTitle>Data portability</SectionTitle>
+        <p className="text-xs text-muted-foreground mb-3">
+          Export all your DocFetch data — clients, templates, and requests — as
+          a single JSON file.
+        </p>
         <Panel>
           <SettingRow
-            title="Export local backup"
-            desc="Download a .json of all workspaces and settings."
+            title="Export account data"
+            desc="Downloads your clients, templates, and requests as a .json file."
           >
             <Button
-              onClick={() =>
+              onClick={async () => {
+                const data = await exportAccountDataAction();
                 downloadFile(
-                  "tabvault-backup.json",
-                  JSON.stringify(
-                    { exportedAt: new Date().toISOString(), workspaces: [] },
-                    null,
-                    2,
-                  ),
+                  "docfetch-export.json",
+                  JSON.stringify(data, null, 2),
                   "application/json",
-                )
-              }
+                );
+              }}
             >
               <Download className="h-4 w-4" /> Export .json
             </Button>
           </SettingRow>
-          <Divider />
-          <div className="p-4">
-            <div className="text-sm font-medium">Import backup file</div>
-            <p className="text-xs text-muted-foreground mt-1 mb-3">
-              Drag and drop a TabVault .json export to hydrate your local
-              database.
-            </p>
-            <div
-              className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground"
-              style={{ borderColor: "var(--color-border)" }}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                alert(
-                  `Imported ${e.dataTransfer.files.length} file(s) (mock).`,
-                );
-              }}
-            >
-              <Upload className="h-5 w-5 mx-auto mb-2" />
-              Drop .json file here, or{" "}
-              <span
-                className="underline cursor-pointer"
-                style={{ color: "var(--indigo)" }}
-              >
-                browse
-              </span>
-            </div>
-          </div>
         </Panel>
       </section>
 
@@ -209,8 +173,8 @@ export const SettingsView: React.FC<{
         <SectionTitle>Danger zone</SectionTitle>
         <Panel>
           <SettingRow
-            title="Reset all workspace data"
-            desc="Clears every workspace, snapshot, and note. Your account stays active."
+            title="Reset all data"
+            desc="Clears all your clients, templates, and requests. Your account stays active."
           >
             <Button onClick={() => setResetOpen(true)} variant={"destructive"}>
               <RotateCcw className="h-4 w-4" /> Reset data
@@ -219,7 +183,7 @@ export const SettingsView: React.FC<{
           <Divider />
           <SettingRow
             title="Delete account"
-            desc="Permanently remove your TabVault account and all associated data."
+            desc="Permanently remove your DocFetch account and all associated data."
           >
             <Button onClick={() => setDeleteOpen(true)} variant={"destructive"}>
               <Trash2 className="h-4 w-4" /> Delete account
