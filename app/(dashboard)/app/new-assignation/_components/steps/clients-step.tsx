@@ -85,10 +85,7 @@ export function ClientsStep() {
                       <div className="flex items-center gap-2">
                         <Avatar>
                           <AvatarFallback className="bg-primary/10 text-sm font-medium text-primary">
-                            {client.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
+                            {getInitials(client.name)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -112,65 +109,69 @@ export function ClientsStep() {
       {/* Selected clients table */}
       <div className="space-y-2">
         <Label>Selected clients ({selectedClients.length})</Label>
-        {selectedClients.length === 0 ? (
-          <div className="flex items-center justify-center rounded-lg border border-dashed py-8 text-sm text-muted-foreground">
-            No clients selected yet.
-          </div>
-        ) : (
-          <div className="overflow-hidden rounded-lg border">
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead>Client</TableHead>
-                  <TableHead className="hidden sm:table-cell">
-                    Company
-                  </TableHead>
-                  <TableHead className="hidden md:table-cell">Email</TableHead>
-                  <TableHead className="w-10" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {selectedClients.map((client) => (
-                  <TableRow key={client.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar>
-                          <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                            {getInitials(client.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="text-sm font-medium">
-                            {client.name}
-                          </div>
-                          <div className="text-xs text-muted-foreground sm:hidden">
-                            {client.company || "No company"}
+        <div className="border-l border-primary/50 pl-3">
+          {selectedClients.length === 0 ? (
+            <div className="flex items-center justify-center rounded-lg border border-dashed py-8 text-sm text-muted-foreground">
+              No clients selected yet.
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-lg border">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Client</TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Company
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Email
+                    </TableHead>
+                    <TableHead className="w-10" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {selectedClients.map((client) => (
+                    <TableRow key={client.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar>
+                            <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                              {getInitials(client.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="text-sm font-medium">
+                              {client.name}
+                            </div>
+                            <div className="text-xs text-muted-foreground sm:hidden">
+                              {client.company || "No company"}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
-                      {client.company || "—"}
-                    </TableCell>
-                    <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
-                      {client.email || "—"}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={`Remove ${client.name}`}
-                        onClick={() => removeClient(client.id)}
-                      >
-                        <X className={cn("h-4 w-4")} />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+                      </TableCell>
+                      <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
+                        {client.company || "—"}
+                      </TableCell>
+                      <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
+                        {client.email || "—"}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={`Remove ${client.name}`}
+                          onClick={() => removeClient(client.id)}
+                        >
+                          <X className={cn("h-4 w-4")} />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Check indicator for when all clients are selected */}

@@ -211,7 +211,17 @@ export function NewAssignationStepper() {
               Loading...
             </div>
           ) : (
-            <StepComponent />
+            <>
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">
+                  {step.label}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {step.description}
+                </p>
+              </div>
+              <StepComponent />
+            </>
           )}
         </CardContent>
       </Card>
